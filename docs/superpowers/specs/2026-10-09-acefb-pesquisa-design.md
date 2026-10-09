@@ -166,6 +166,119 @@ Chaves ausentes = não visitadas. Valores array vão para a Sheet concatenados c
 - Apps Script: fica atrelado à conta do Júlio; se a Evolve quiser assumir, redeploy sob a conta deles trocando o ID da planilha.
 - README documenta esses três passos.
 
+## 12.1 Variante entrevista presencial (adicionada 2026-10-09)
+
+A Evolve pediu uma segunda forma de aplicar a mesma pesquisa: entrevista
+presencial, conduzida por um entrevistador que preenche no celular dele
+enquanto conversa com o respondente. As respostas vão para uma **segunda
+aba** da mesma planilha, para análise separada.
+
+**Decisões:**
+
+- **Simplificação:** apenas remove ramificações. Todas as 20 perguntas
+  aparecem sempre, na ordem p1 → p20. p1–p3 (triagem) permanecem porque
+  são de caráter eliminatório; o entrevistador decide verbalmente se
+  continua ou não, mas as colunas ficam preenchidas na planilha.
+- **Preenchedor:** o próprio entrevistador. UX otimizada para uso rápido
+  com uma mão.
+- **Identificação do entrevistador:** não há. Apenas timestamp +
+  respostas (igual à aba pública).
+
+**UX da variante:**
+
+- Mesma estilização do público. Marcador visual "Modo entrevista" no topo.
+- Uma seção por tela. Botão **Voltar** habilitado (correção de erro).
+- Cada pergunta tem botão **Pular pergunta** — respondente recusou →
+  célula fica vazia. Reversível ao reinteragir com a pergunta.
+- Tela final mostra `Entrevista #N enviada` + botão **Nova entrevista**
+  que reseta o estado sem recarregar. Contador N é por sessão
+  (sessionStorage), só pra feedback ao entrevistador.
+- Sem retry via localStorage: se der erro de rede, mostra botão
+  **Tentar reenviar** manual. É uma entrevista presencial, o
+  entrevistador percebe a falha na hora.
+
+**Arquitetura — artefatos adicionados** (consistente com o plano principal, ES modules):
+
+- `entrevista.html` — shell com `<main id="app">` e `<script type="module" src="entrevista.js">`.
+- `entrevista.js` — orchestrator próprio na raiz. **Reusa** `src/perguntas.js`,
+  `src/estado.js` (apenas `perguntasDaSecao`), `src/validacao.js`,
+  `src/render.js` e `src/submit.js` (apenas `APPS_SCRIPT_URL` e `gerarUuid`).
+- `styles.css` — compartilhado (ela cria na Task 5). `entrevista.html`
+  acrescenta estilos próprios inline para marcador "Modo entrevista",
+  botão Pular, estado `.pulada` e contador final.
+- `apps-script/Code.gs` — recebe o patch descrito abaixo.
+
+**O que a variante NÃO reusa:**
+
+- `proximaSecao` de `src/estado.js` — fluxo é linear (`secao + 1`).
+- `enviarRespostas` de `src/submit.js` — a variante faz o POST direto com
+  `modo: "entrevista"` adicionado ao payload. Sem localStorage retry;
+  erro mostra botão **Tentar reenviar** manual.
+- `renderInicio` / `renderFim` de `src/render.js` — telas próprias:
+  tela inicial com contador por sessão + botão "Nova entrevista"; tela
+  final com `Entrevista #N enviada`.
+
+**Payload da variante:**
+
+```json
+{ "modo": "entrevista", "uuid": "<uuid>", "p1": "...", "p4": "...", ... }
+```
+
+Chaves `pX` ausentes = puladas (ou saltadas pelo entrevistador). `modo`
+ausente ou qualquer valor diferente de `"entrevista"` → comportamento
+atual (aba `Respostas`). `uuid` segue o mesmo esquema do público.
+
+**Patch necessário no `apps-script/Code.gs` (Task 7 do plano principal):**
+
+Substituir a constante única `ABA` por roteamento em `doPost`:
+
+```js
+// const ABA = 'Respostas';   // substituído
+const ABA_PUBLICA = 'Respostas';
+const ABA_ENTREVISTA = 'Entrevistas';
+
+function doPost(e) {
+  try {
+    const body = JSON.parse(e.postData.contents);
+    const nomeAba = body.modo === 'entrevista' ? ABA_ENTREVISTA : ABA_PUBLICA;
+    const sheet = garantirAba_(nomeAba);
+    const linha = montarLinha_(body);
+    sheet.appendRow(linha);
+    return ContentService.createTextOutput(JSON.stringify({ ok: true }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ ok: false, erro: String(err) }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function garantirAba_(nome) {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(nome);
+  if (!sheet) { sheet = ss.insertSheet(nome); sheet.appendRow(CABECALHO); }
+  else if (sheet.getLastRow() === 0) { sheet.appendRow(CABECALHO); }
+  return sheet;
+}
+```
+
+**Modelo de dados — aba `Entrevistas`:**
+
+Cabeçalhos idênticos aos de `Respostas`, 22 colunas:
+
+```
+timestamp_iso | uuid | p1 | p2 | p3 | ... | p20
+```
+
+Perguntas puladas = célula vazia.
+
+As duas abas podem ser consolidadas depois no Looker/BI, se a Evolve
+quiser, usando a coluna de origem (`aba`) como dimensão.
+
+**URL final:**
+
+- Público: `https://jcficanha.github.io/acefb-pesquisa/`
+- Entrevista: `https://jcficanha.github.io/acefb-pesquisa/entrevista.html`
+
 ## 13. Fora de escopo (deliberado)
 
 - Dashboard de análise (Evolve usa a Sheet).
