@@ -135,7 +135,7 @@ html, body {
   .logo-mark { height: 42px; }
   .logo-nome { font-size: 1.5rem; }
   .logo-oktoberfest-img { height: 75px; }
-  .logo-acefb { transform: translate(-3px, 8px); }
+  .logo-acefb { transform: translateY(6px); }
 }
 @media (max-width: 400px) {
   .logos { gap: 6px; padding: 16px 2px 4px; }
