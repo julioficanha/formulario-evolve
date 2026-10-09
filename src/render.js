@@ -40,6 +40,53 @@ export function renderSecao(secao, respostas, onChange) {
   return el;
 }
 
+/**
+ * Renderiza UMA pergunta em layout editorial grande (uma-por-tela).
+ * Diferente de renderPergunta (interna), não envelopa a pergunta em um
+ * card: o espaço em branco e a tipografia carregam a hierarquia.
+ */
+export function renderPerguntaUnica(pergunta, valorAtual, onChange) {
+  const el = document.createElement('section');
+  el.className = 'tela tela-pergunta pergunta-ativa';
+  el.dataset.id = pergunta.id;
+
+  const texto = document.createElement('h1');
+  texto.className = 'pergunta-titulo';
+  texto.textContent = pergunta.texto;
+  el.appendChild(texto);
+
+  if (pergunta.descricao) {
+    const desc = document.createElement('p');
+    desc.className = 'pergunta-descricao';
+    desc.textContent = pergunta.descricao;
+    el.appendChild(desc);
+  }
+
+  const resposta = document.createElement('div');
+  resposta.className = 'pergunta-resposta';
+  switch (pergunta.tipo) {
+    case 'radio': resposta.appendChild(renderRadio(pergunta, valorAtual, onChange)); break;
+    case 'checkbox': resposta.appendChild(renderCheckbox(pergunta, valorAtual || [], onChange)); break;
+    case 'textarea': resposta.appendChild(renderTextarea(pergunta, valorAtual || '', onChange)); break;
+    case 'text': resposta.appendChild(renderText(pergunta, valorAtual || '', onChange)); break;
+  }
+  el.appendChild(resposta);
+
+  const erro = document.createElement('p');
+  erro.className = 'erro';
+  erro.dataset.erroPara = pergunta.id;
+  el.appendChild(erro);
+
+  if (pergunta.tipo === 'checkbox' && pergunta.maxEscolhas) {
+    const dica = document.createElement('p');
+    dica.className = 'pergunta-dica';
+    dica.textContent = `Marque até ${pergunta.maxEscolhas}.`;
+    el.insertBefore(dica, resposta);
+  }
+
+  return el;
+}
+
 function renderPergunta(pergunta, valorAtual, onChange) {
   const div = document.createElement('div');
   div.className = 'pergunta';
