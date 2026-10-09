@@ -72,28 +72,48 @@ html, body {
 }
 
 /* ================================================================
-   Header com os três logos — discreto, no topo
+   Header com os três logos — discreto no espaço, forte na identidade
    ================================================================ */
 .logos {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 28px;
   padding: 20px 20px 0;
-  opacity: 0.55;
   flex-wrap: wrap;
 }
-.logos img { display: block; width: auto; }
-.logos .logo-acefb { height: 20px; color: var(--cor-texto); }
-.logos .logo-evolve { height: 22px; border-radius: 4px; }
-.logos .logo-placeholder {
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+.logo-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-mark {
+  display: block;
+  width: auto;
+  height: 26px;
+}
+.logo-nome {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.logo-acefb .logo-mark { color: #0b2a4a; }
+.logo-acefb .logo-nome { color: #0b2a4a; }
+.logo-evolve .logo-nome { color: #a67822; }
+.logo-placeholder {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--cor-texto-secundario);
   text-align: center;
-  line-height: 1.3;
+  line-height: 1.25;
+}
+@media (prefers-color-scheme: dark) {
+  .logo-acefb .logo-mark { color: #e5e5e7; }
+  .logo-acefb .logo-nome { color: #e5e5e7; }
+  .logo-evolve .logo-nome { color: #d4a94a; }
 }
 
 /* ================================================================
@@ -532,9 +552,9 @@ body.modo-entrevista .check-sucesso::after {
    Desktop refinements
    ================================================================ */
 @media (min-width: 720px) {
-  .logos { gap: 32px; padding-top: 28px; }
-  .logos .logo-acefb { height: 22px; }
-  .logos .logo-evolve { height: 24px; }
+  .logos { gap: 40px; padding-top: 28px; }
+  .logo-mark { height: 30px; }
+  .logo-nome { font-size: 1.1rem; }
   #app { padding: 24px 24px 40px; }
   .tela { padding: 48px 0; }
   .opcao { padding: 18px 20px; min-height: 60px; font-size: 1.05rem; }
