@@ -1,4 +1,6 @@
-export const descricaoInicial = `Esta pesquisa é realizada pela Evolve para a ACEFB, para entender como as pessoas percebem a associação. Não pedimos nome, contato ou identificação da empresa, e não haverá abordagem comercial.`;
+export const descricaoInicial = `Esta pesquisa é realizada pela Evolve para a ACEFB, para entender como as pessoas percebem a associação.
+
+Queremos conhecer sua opinião, mesmo que você não conheça a ACEFB. Você pode interromper a participação a qualquer momento. O preenchimento leva aproximadamente 3 a 4 minutos.`;
 
 export const mensagemFinal = `Agradecemos sua disponibilidade. Esta pesquisa é anônima e não gera contato comercial.`;
 

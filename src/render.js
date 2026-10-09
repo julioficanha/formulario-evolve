@@ -6,13 +6,7 @@ export function renderInicio(descricao) {
   el.className = 'tela tela-inicio';
   el.innerHTML = `
     <h1>ACEFB na sua visão</h1>
-    <p class="subtitulo">Pesquisa de percepção</p>
     <div class="descricao">${descricao.split('\n\n').map(p => `<p>${p}</p>`).join('')}</div>
-    <div class="sinais-confianca">
-      <span>3 a 4 minutos</span>
-      <span>Anônimo</span>
-      <span>Sem contato comercial</span>
-    </div>
   `;
   return el;
 }
