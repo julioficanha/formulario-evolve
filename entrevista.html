@@ -15,6 +15,20 @@
     <img src="assets/evolve-logo.png" alt="Evolve" class="logo-evolve" />
   </header>
   <main id="app" aria-live="polite"></main>
+  <script>
+    if (location.protocol === 'file:') {
+      document.getElementById('app').innerHTML = `
+        <section class="aviso-file">
+          <h1>Abra pelo servidor local</h1>
+          <p>A entrevista usa módulos JavaScript, que o navegador bloqueia quando a página é aberta direto do disco. Faça assim:</p>
+          <ol>
+            <li>Abra um terminal na pasta do projeto e rode:<br><code>npm start</code></li>
+            <li>Depois abra no navegador:<br><code>http://localhost:8765/entrevista.html</code></li>
+          </ol>
+          <p style="font-size:.85rem;opacity:.65;margin:0">Alternativa sem npm: <code>python3 -m http.server 8765</code></p>
+        </section>`;
+    }
+  </script>
   <script type="module" src="entrevista.js"></script>
 </body>
 </html>

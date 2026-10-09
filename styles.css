@@ -365,6 +365,34 @@ body.modo-entrevista { border-top: 3px solid #d4a94a; }
 }
 
 /* ================================================
+   Aviso quando aberto via file:// (JS módulo bloqueado)
+   ================================================ */
+.aviso-file {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 16px;
+  padding: 28px 24px;
+  margin-top: 24px;
+  color: #ffffff;
+}
+.aviso-file h1 { font-size: 1.4rem; margin: 0 0 10px; }
+.aviso-file p { color: rgba(255,255,255,0.85); margin: 0 0 16px; line-height: 1.6; }
+.aviso-file code {
+  display: inline-block;
+  background: rgba(0,0,0,0.3);
+  color: #ffffff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.95rem;
+  margin: 4px 0;
+  user-select: all;
+}
+.aviso-file ol { padding-left: 20px; margin: 0; }
+.aviso-file li { margin-bottom: 14px; }
+.aviso-file a { color: #ffffff; font-weight: 600; }
+
+/* ================================================
    Preferências / responsivo
    ================================================ */
 @media (prefers-reduced-motion: reduce) {

@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "start": "python3 -m http.server 8765",
     "test": "node --test tests/"
   },
   "devDependencies": {
