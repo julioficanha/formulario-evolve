@@ -90,10 +90,10 @@ html, body {
 .logo-mark {
   display: block;
   width: auto;
-  height: 26px;
+  height: 39px;
 }
 .logo-nome {
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1;
@@ -112,7 +112,7 @@ html, body {
 }
 .logo-oktoberfest-img {
   display: block;
-  height: 44px;
+  height: 66px;
   width: auto;
 }
 @media (prefers-color-scheme: dark) {
@@ -128,20 +128,26 @@ html, body {
 @media (max-width: 520px) {
   .logos {
     flex-wrap: nowrap;
-    gap: 18px;
-    padding: 18px 12px 6px;
+    gap: 14px;
+    padding: 20px 8px 6px;
   }
-  .logo-item { gap: 8px; }
-  .logo-mark { height: 28px; }
-  .logo-nome { font-size: 1rem; }
-  .logo-oktoberfest-img { height: 50px; }
-  .logo-acefb { transform: translateY(3px); }
+  .logo-item { gap: 10px; }
+  .logo-mark { height: 42px; }
+  .logo-nome { font-size: 1.5rem; }
+  .logo-oktoberfest-img { height: 75px; }
+  .logo-acefb { transform: translate(-3px, 8px); }
 }
-@media (max-width: 380px) {
-  .logos { gap: 12px; padding: 14px 8px 6px; }
-  .logo-mark { height: 24px; }
-  .logo-nome { font-size: 0.88rem; }
-  .logo-oktoberfest-img { height: 42px; }
+@media (max-width: 400px) {
+  .logos { gap: 6px; padding: 16px 2px 4px; }
+  .logo-item { gap: 7px; }
+  .logo-mark { height: 32px; }
+  .logo-nome { font-size: 1.2rem; }
+  .logo-oktoberfest-img { height: 58px; }
+}
+@media (max-width: 340px) {
+  .logo-mark { height: 28px; }
+  .logo-nome { font-size: 1.05rem; }
+  .logo-oktoberfest-img { height: 52px; }
 }
 
 /* ================================================================
@@ -581,9 +587,9 @@ body.modo-entrevista .check-sucesso::after {
    ================================================================ */
 @media (min-width: 720px) {
   .logos { gap: 40px; padding-top: 28px; }
-  .logo-mark { height: 30px; }
-  .logo-nome { font-size: 1.1rem; }
-  .logo-oktoberfest-img { height: 52px; }
+  .logo-mark { height: 45px; }
+  .logo-nome { font-size: 1.65rem; }
+  .logo-oktoberfest-img { height: 78px; }
   #app { padding: 24px 24px 40px; }
   .tela { padding: 48px 0; }
   .opcao { padding: 18px 20px; min-height: 60px; font-size: 1.05rem; }
