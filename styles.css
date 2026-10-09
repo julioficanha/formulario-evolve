@@ -72,85 +72,27 @@ html, body {
 }
 
 /* ================================================================
-   Header com os três logos — discreto no espaço, forte na identidade
+   Header de parceria — texto único, discreto
    ================================================================ */
-.logos {
+.parceria {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 28px;
-  padding: 20px 20px 0;
-  flex-wrap: wrap;
+  padding: 24px 20px 8px;
 }
-.logo-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-.logo-mark {
-  display: block;
-  width: auto;
-  height: 39px;
-}
-.logo-nome {
+.parceria-texto {
   font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 1;
-}
-.logo-acefb .logo-mark { color: #0b2a4a; }
-.logo-acefb .logo-nome { color: #0b2a4a; }
-.logo-evolve .logo-nome { color: #a67822; }
-.logo-placeholder {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--cor-texto-secundario);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--cor-texto);
+  line-height: 1.2;
   text-align: center;
-  line-height: 1.25;
-}
-.logo-oktoberfest-img {
-  display: block;
-  height: 66px;
-  width: auto;
-}
-@media (prefers-color-scheme: dark) {
-  .logo-acefb .logo-mark { color: #e5e5e7; }
-  .logo-acefb .logo-nome { color: #e5e5e7; }
-  .logo-evolve .logo-nome { color: #d4a94a; }
-}
-
-/* No celular, mantém a linha horizontal única (nowrap) e encolhe tudo
-   proporcionalmente até caber. Dois breakpoints: mobile normal e muito
-   estreito. ACEFB ganha um deslocamento vertical sutil para enquadrar
-   visualmente com a Oktoberfest (que é mais alta). */
-@media (max-width: 520px) {
-  .logos {
-    flex-wrap: nowrap;
-    gap: 14px;
-    padding: 20px 8px 6px;
-    transform: translate(-10px, 12px);
-  }
-  .logo-item { gap: 10px; }
-  .logo-mark { height: 42px; }
-  .logo-nome { font-size: 1.5rem; }
-  .logo-oktoberfest-img { height: 75px; }
-  .logo-acefb { margin-right: 14px; transform: translateY(6px); }
 }
 @media (max-width: 400px) {
-  .logos { gap: 6px; padding: 16px 2px 4px; }
-  .logo-item { gap: 7px; }
-  .logo-mark { height: 32px; }
-  .logo-nome { font-size: 1.2rem; }
-  .logo-oktoberfest-img { height: 58px; }
-  .logo-acefb { margin-right: 10px; }
+  .parceria { padding: 20px 16px 6px; }
+  .parceria-texto { font-size: 1.25rem; }
 }
 @media (max-width: 340px) {
-  .logo-mark { height: 28px; }
-  .logo-nome { font-size: 1.05rem; }
-  .logo-oktoberfest-img { height: 52px; }
-  .logo-acefb { margin-right: 8px; }
+  .parceria-texto { font-size: 1.1rem; }
 }
 
 /* ================================================================
@@ -589,10 +531,8 @@ body.modo-entrevista .check-sucesso::after {
    Desktop refinements
    ================================================================ */
 @media (min-width: 720px) {
-  .logos { gap: 40px; padding-top: 28px; }
-  .logo-mark { height: 45px; }
-  .logo-nome { font-size: 1.65rem; }
-  .logo-oktoberfest-img { height: 78px; }
+  .parceria { padding-top: 32px; }
+  .parceria-texto { font-size: 1.75rem; }
   #app { padding: 24px 24px 40px; }
   .tela { padding: 48px 0; }
   .opcao { padding: 18px 20px; min-height: 60px; font-size: 1.05rem; }
