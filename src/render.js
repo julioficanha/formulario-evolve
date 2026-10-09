@@ -20,13 +20,12 @@ export function renderInicio(descricao) {
   const el = document.createElement('section');
   el.className = 'tela tela-inicio';
   const estado = { idx: 0 };
-  const tituloHtml = destacar('[[ACEFB na sua visão]]', estado);
   const descHtml = descricao
     .split('\n\n')
     .map(p => `<p>${destacar(p, estado)}</p>`)
     .join('');
   el.innerHTML = `
-    <h1>${tituloHtml}</h1>
+    <h1>ACEFB na sua visão</h1>
     <div class="descricao">${descHtml}</div>
   `;
   return el;
