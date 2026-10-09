@@ -67,3 +67,11 @@ test('perguntasDaSecao(5) retorna p5 a p12 em ordem', () => {
   const ps = perguntasDaSecao(5);
   assert.deepEqual(ps.map(p => p.id), ['p5', 'p6', 'p7', 'p8', 'p9', 'p10', 'p11', 'p12']);
 });
+
+test('Review Focus 3: p1 Não deixa apenas p1 preenchida — demais perguntas ausentes', () => {
+  const respostas = { p1: 'Não.' };
+  const prox = proximaSecao(1, respostas);
+  assert.equal(prox, 'fim');
+  // nenhuma outra chave deve ser inferida ou preenchida a partir daqui
+  assert.deepEqual(Object.keys(respostas), ['p1']);
+});
