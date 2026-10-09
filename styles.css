@@ -1,23 +1,384 @@
+/* ================================================
+   ACEFB na sua visão — estética Apple-minimal
+   Fundo: Evolve navy clareado (#0f2850)
+   ================================================ */
+
 * { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color: #0b1b2b; background: #f4f6fa; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+               system-ui, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #ffffff;
+  background: #0f2850;
+  min-height: 100vh;
+}
+
 body { line-height: 1.5; }
-#app { max-width: 640px; margin: 0 auto; padding: 16px; }
-h1 { font-size: 1.6rem; margin: 0 0 4px; color: #0b2a4a; }
-.subtitulo { color: #4a5a70; margin: 0 0 16px; }
-.descricao p { margin: 0 0 12px; }
-.progresso { background: #e2e7ef; height: 6px; border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
-.progresso-fill { background: #0b2a4a; height: 100%; transition: width 0.3s ease; }
-.pergunta { background: #fff; border-radius: 10px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-.pergunta-texto { display: block; font-weight: 600; margin-bottom: 8px; }
-.pergunta-descricao { font-size: 0.9rem; color: #4a5a70; margin: 0 0 10px; }
+
+/* ===== Header com os três logos (parceria) ===== */
+.logos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 20px 20px 12px;
+  opacity: 0.85;
+  flex-wrap: wrap;
+}
+.logos img { display: block; width: auto; }
+.logos .logo-acefb { height: 24px; color: #ffffff; }
+.logos .logo-evolve { height: 32px; border-radius: 6px; }
+.logos .logo-placeholder {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.75);
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* ===== Container principal ===== */
+#app {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 8px 20px 140px;
+  min-height: 100vh;
+}
+
+/* ===== Barra de progresso + rótulo ===== */
+.progresso {
+  background: rgba(255,255,255,0.15);
+  height: 4px;
+  border-radius: 2px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.progresso-fill {
+  background: #ffffff;
+  height: 100%;
+  transition: width 0.35s ease;
+}
+.progresso-label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.65);
+  margin: 0 0 24px;
+  letter-spacing: 0.02em;
+}
+
+/* ===== Títulos ===== */
+h1 {
+  font-size: 1.75rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+  color: #ffffff;
+}
+.subtitulo {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.95rem;
+  margin: 0 0 24px;
+}
+
+/* ===== Tela inicial ===== */
+.tela-inicio .descricao {
+  background: rgba(255,255,255,0.08);
+  border-left: 3px solid rgba(255,255,255,0.4);
+  padding: 16px 18px;
+  border-radius: 10px;
+  margin: 8px 0 16px;
+}
+.tela-inicio .descricao p {
+  color: rgba(255,255,255,0.9);
+  margin: 0 0 10px;
+}
+.tela-inicio .descricao p:last-child { margin-bottom: 0; }
+.sinais-confianca {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.82rem;
+  margin: 20px 0 8px;
+  flex-wrap: wrap;
+}
+.sinais-confianca span {
+  display: inline-flex;
+  align-items: center;
+}
+.sinais-confianca span + span::before {
+  content: '·';
+  margin-right: 10px;
+  opacity: 0.6;
+}
+
+/* ===== Card de pergunta ===== */
+.pergunta {
+  background: #ffffff;
+  color: #0f2850;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+}
+.pergunta-texto {
+  display: block;
+  font-weight: 600;
+  font-size: 1.1rem;
+  line-height: 1.35;
+  margin-bottom: 10px;
+  color: #0f2850;
+}
+.pergunta-descricao {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: -4px 0 14px;
+}
+
+/* ===== Opções (radio / checkbox) ===== */
 fieldset { border: none; padding: 0; margin: 0; }
-.opcao { display: flex; align-items: flex-start; gap: 8px; padding: 10px 8px; border-radius: 6px; cursor: pointer; }
-.opcao:hover { background: #f0f3f8; }
-.opcao input { margin-top: 3px; }
-textarea, input[type="text"] { width: 100%; padding: 10px; border: 1px solid #cbd3df; border-radius: 6px; font: inherit; }
-textarea:focus, input:focus { outline: 2px solid #0b2a4a; outline-offset: 2px; }
-.erro { color: #b00020; font-size: 0.9rem; margin: 6px 0 0; min-height: 1em; }
-.botao-principal { display: block; width: 100%; padding: 14px; background: #0b2a4a; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 16px; }
-.botao-principal:hover { background: #143c66; }
-.tela-fim { text-align: center; padding: 40px 20px; }
-@media (min-width: 720px) { #app { padding: 24px; } .pergunta { padding: 20px; } }
+.opcao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  min-height: 48px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #0f2850;
+  font-size: 1rem;
+  transition: background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.opcao:hover { background: #f4f6fa; }
+.opcao:has(input:checked) {
+  background: #eef2f9;
+  font-weight: 500;
+}
+.opcao input {
+  margin: 0;
+  width: 20px;
+  height: 20px;
+  accent-color: #0f2850;
+  flex-shrink: 0;
+}
+
+/* ===== Text inputs ===== */
+textarea, input[type="text"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font: inherit;
+  color: #0f2850;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+textarea { resize: vertical; min-height: 100px; }
+textarea:focus, input[type="text"]:focus {
+  outline: none;
+  border-color: #0f2850;
+  box-shadow: 0 0 0 3px rgba(15,40,80,0.12);
+}
+
+/* ===== Erro ===== */
+.erro {
+  color: #dc2626;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 8px 0 0;
+  min-height: 1em;
+}
+
+/* ===== Botão principal (branco com texto navy) ===== */
+.botao-principal {
+  display: block;
+  width: 100%;
+  padding: 15px 20px;
+  background: #ffffff;
+  color: #0f2850;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.botao-principal:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+.botao-principal:active { transform: scale(0.985); }
+
+/* ===== Tela final ===== */
+.tela-fim {
+  text-align: center;
+  padding: 40px 20px 20px;
+  color: #ffffff;
+}
+.tela-fim h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 24px 0 12px;
+  letter-spacing: -0.01em;
+}
+.tela-fim p {
+  color: rgba(255,255,255,0.85);
+  font-size: 1rem;
+  margin: 0 auto;
+  max-width: 420px;
+}
+.check-sucesso {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 8px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.check-sucesso::after {
+  content: '';
+  width: 26px;
+  height: 13px;
+  border-left: 3px solid #0f2850;
+  border-bottom: 3px solid #0f2850;
+  transform: rotate(-45deg) translate(2px, -4px);
+}
+
+/* ================================================
+   Modo entrevista — faixa dourada + ajustes
+   ================================================ */
+body.modo-entrevista { border-top: 3px solid #d4a94a; }
+
+.modo-entrevista-tag {
+  display: inline-block;
+  background: #d4a94a;
+  color: #0f2850;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+/* ===== Botão secundário (Voltar) ===== */
+.botao-secundario {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.botao-secundario:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.6);
+}
+
+/* ===== Botão pular (por pergunta) ===== */
+.botao-pular {
+  background: transparent;
+  color: #6b7280;
+  border: 1px dashed #cbd5e0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.botao-pular:hover { color: #0f2850; border-color: #0f2850; }
+
+/* ===== Estado "pulada" ===== */
+.pergunta.pulada {
+  opacity: 0.55;
+  box-shadow: none;
+  border: 1px dashed rgba(15,40,80,0.3);
+}
+.pergunta.pulada::after {
+  content: "Pulada — toque numa opção para desfazer.";
+  display: block;
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-style: italic;
+  margin-top: 8px;
+}
+
+/* ===== Ações (Voltar / Próxima lado a lado) ===== */
+.acoes-entrevista {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+.acoes-entrevista > * { flex: 1; margin-top: 0; }
+
+/* ===== Contador por sessão ===== */
+.contador-entrevista {
+  display: inline-block;
+  background: rgba(255,255,255,0.12);
+  color: #ffffff;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 12px;
+}
+
+/* ===== Status de envio ===== */
+.status-envio {
+  margin-top: 14px;
+  font-size: 0.9rem;
+  min-height: 1.2em;
+  text-align: center;
+  color: rgba(255,255,255,0.8);
+}
+.status-envio.erro { color: #fecaca; }
+.status-envio.ok { color: #86efac; }
+
+.enviando::after {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  text-align: left;
+  animation: pontos 1.4s steps(4, end) infinite;
+}
+@keyframes pontos {
+  0%   { content: ''; }
+  25%  { content: '.'; }
+  50%  { content: '..'; }
+  75%  { content: '...'; }
+  100% { content: ''; }
+}
+
+/* ================================================
+   Preferências / responsivo
+   ================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (min-width: 720px) {
+  #app { padding: 16px 24px 160px; }
+  .pergunta { padding: 24px; }
+  h1 { font-size: 2rem; }
+  .logos { gap: 32px; padding-top: 28px; }
+  .logos .logo-acefb { height: 28px; }
+  .logos .logo-evolve { height: 36px; }
+}
