@@ -1,7 +1,59 @@
-/* ================================================
-   ACEFB na sua visão — estética Apple-minimal
-   Fundo: Evolve navy clareado (#0f2850)
-   ================================================ */
+/* ================================================================
+   ACEFB na sua visão — formulário premium (Apple × Typeform)
+   Luz como padrão, escuro via prefers-color-scheme.
+   Uma pergunta por tela, tipografia editorial, acento azul discreto.
+   ================================================================ */
+
+:root {
+  --cor-bg: #ffffff;
+  --cor-superficie: #f5f5f7;
+  --cor-superficie-hover: #ececf0;
+  --cor-superficie-ativa: #e8f0fe;
+  --cor-texto: #1d1d1f;
+  --cor-texto-secundario: #6e6e73;
+  --cor-texto-terciario: #86868b;
+  --cor-borda: #d2d2d7;
+  --cor-borda-sutil: rgba(0,0,0,0.08);
+  --cor-acento: #0071e3;
+  --cor-acento-hover: #0077ed;
+  --cor-acento-pressed: #006edb;
+  --cor-acento-claro: rgba(0,113,227,0.1);
+  --cor-erro: #d70015;
+  --cor-sucesso: #248a3d;
+  --cor-aviso: #ba6500;
+
+  --raio-pequeno: 8px;
+  --raio-medio: 12px;
+  --raio-grande: 16px;
+
+  --sombra-sutil: 0 1px 3px rgba(0,0,0,0.06);
+  --sombra-botao: 0 1px 2px rgba(0,113,227,0.3);
+  --sombra-foco: 0 0 0 4px rgba(0,113,227,0.15);
+
+  --easing: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --duracao-rapida: 150ms;
+  --duracao-media: 260ms;
+
+  --largura-conteudo: 580px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cor-bg: #000000;
+    --cor-superficie: #1c1c1e;
+    --cor-superficie-hover: #2c2c2e;
+    --cor-superficie-ativa: #0a2a4e;
+    --cor-texto: #f5f5f7;
+    --cor-texto-secundario: #98989d;
+    --cor-texto-terciario: #6e6e73;
+    --cor-borda: #38383a;
+    --cor-borda-sutil: rgba(255,255,255,0.08);
+    --cor-acento: #0a84ff;
+    --cor-acento-hover: #409cff;
+    --cor-acento-pressed: #0071e3;
+    --cor-acento-claro: rgba(10,132,255,0.18);
+  }
+}
 
 * { box-sizing: border-box; }
 
@@ -9,236 +61,349 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-               system-ui, "Segoe UI", Roboto, sans-serif;
+               "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #ffffff;
-  background: #0f2850;
+  color: var(--cor-texto);
+  background: var(--cor-bg);
   min-height: 100vh;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
-body { line-height: 1.5; }
-
-/* ===== Header com os três logos (parceria) ===== */
+/* ================================================================
+   Header com os três logos — discreto, no topo
+   ================================================================ */
 .logos {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 24px;
-  padding: 20px 20px 12px;
-  opacity: 0.85;
+  padding: 20px 20px 0;
+  opacity: 0.55;
   flex-wrap: wrap;
 }
 .logos img { display: block; width: auto; }
-.logos .logo-acefb { height: 24px; color: #ffffff; }
-.logos .logo-evolve { height: 32px; border-radius: 6px; }
+.logos .logo-acefb { height: 20px; color: var(--cor-texto); }
+.logos .logo-evolve { height: 22px; border-radius: 4px; }
 .logos .logo-placeholder {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.75);
+  color: var(--cor-texto-secundario);
   text-align: center;
   line-height: 1.3;
 }
 
-/* ===== Container principal ===== */
-#app {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 8px 20px 140px;
-  min-height: 100vh;
-}
-
-/* ===== Barra de progresso + rótulo ===== */
+/* ================================================================
+   Barra de progresso — linha fina no topo do viewport
+   ================================================================ */
 .progresso {
-  background: rgba(255,255,255,0.15);
-  height: 4px;
-  border-radius: 2px;
-  margin-bottom: 8px;
-  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--cor-borda-sutil);
+  z-index: 10;
 }
 .progresso-fill {
-  background: #ffffff;
   height: 100%;
-  transition: width 0.35s ease;
-}
-.progresso-label {
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: rgba(255,255,255,0.65);
-  margin: 0 0 24px;
-  letter-spacing: 0.02em;
+  background: var(--cor-acento);
+  width: 0%;
+  transition: width 400ms var(--easing);
 }
 
-/* ===== Títulos ===== */
-h1 {
-  font-size: 1.75rem;
-  line-height: 1.2;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin: 0 0 6px;
-  color: #ffffff;
-}
-.subtitulo {
-  color: rgba(255,255,255,0.7);
-  font-size: 0.95rem;
-  margin: 0 0 24px;
+/* ================================================================
+   Container principal — centralizado, uma pergunta por tela
+   ================================================================ */
+#app {
+  max-width: var(--largura-conteudo);
+  margin: 0 auto;
+  padding: 20px 24px 32px;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
 }
 
-/* ===== Tela inicial ===== */
-.tela-inicio .descricao {
-  background: rgba(255,255,255,0.08);
-  border-left: 3px solid rgba(255,255,255,0.4);
-  padding: 16px 18px;
-  border-radius: 10px;
-  margin: 8px 0 16px;
+.tela {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 0;
+}
+
+/* ================================================================
+   Transição ao renderizar nova pergunta
+   ================================================================ */
+.pergunta-ativa {
+  animation: entrar var(--duracao-media) var(--easing);
+}
+@keyframes entrar {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================================================================
+   Tela inicial
+   ================================================================ */
+.tela-inicio h1 {
+  font-size: clamp(1.9rem, 5vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin: 0 0 12px;
+  color: var(--cor-texto);
+}
+.tela-inicio .subtitulo {
+  font-size: 1rem;
+  color: var(--cor-texto-secundario);
+  margin: 0 0 32px;
+  letter-spacing: -0.01em;
 }
 .tela-inicio .descricao p {
-  color: rgba(255,255,255,0.9);
-  margin: 0 0 10px;
+  font-size: 1.05rem;
+  color: var(--cor-texto);
+  margin: 0 0 14px;
+  line-height: 1.55;
 }
 .tela-inicio .descricao p:last-child { margin-bottom: 0; }
 .sinais-confianca {
   display: flex;
-  gap: 10px;
-  justify-content: center;
-  color: rgba(255,255,255,0.6);
-  font-size: 0.82rem;
-  margin: 20px 0 8px;
+  gap: 12px;
+  color: var(--cor-texto-secundario);
+  font-size: 0.85rem;
+  margin: 28px 0 36px;
   flex-wrap: wrap;
-}
-.sinais-confianca span {
-  display: inline-flex;
   align-items: center;
 }
 .sinais-confianca span + span::before {
   content: '·';
-  margin-right: 10px;
-  opacity: 0.6;
+  margin-right: 12px;
+  color: var(--cor-texto-terciario);
 }
 
-/* ===== Card de pergunta ===== */
-.pergunta {
-  background: #ffffff;
-  color: #0f2850;
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 16px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.14);
-}
-.pergunta-texto {
-  display: block;
+/* ================================================================
+   Pergunta única — layout editorial
+   ================================================================ */
+.pergunta-titulo {
+  font-size: clamp(1.5rem, 4.5vw, 2.1rem);
   font-weight: 600;
-  font-size: 1.1rem;
-  line-height: 1.35;
-  margin-bottom: 10px;
-  color: #0f2850;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  margin: 0 0 10px;
+  color: var(--cor-texto);
 }
 .pergunta-descricao {
-  font-size: 0.9rem;
-  color: #6b7280;
-  margin: -4px 0 14px;
+  font-size: 1rem;
+  color: var(--cor-texto-secundario);
+  margin: 0 0 24px;
+  line-height: 1.5;
 }
+.pergunta-dica {
+  font-size: 0.85rem;
+  color: var(--cor-texto-terciario);
+  margin: 0 0 16px;
+  font-weight: 500;
+}
+.pergunta-resposta { margin-top: 8px; }
 
-/* ===== Opções (radio / checkbox) ===== */
-fieldset { border: none; padding: 0; margin: 0; }
+/* ================================================================
+   Radio / Checkbox — opções clicáveis grandes
+   ================================================================ */
+fieldset { border: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+
 .opcao {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  min-height: 48px;
-  border-radius: 10px;
+  gap: 14px;
+  padding: 16px 18px;
+  min-height: 56px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
   cursor: pointer;
-  color: #0f2850;
+  color: var(--cor-texto);
   font-size: 1rem;
-  transition: background 0.15s ease;
+  background: var(--cor-bg);
+  transition: border-color var(--duracao-rapida) var(--easing),
+              background var(--duracao-rapida) var(--easing),
+              transform var(--duracao-rapida) var(--easing);
   -webkit-tap-highlight-color: transparent;
 }
-.opcao:hover { background: #f4f6fa; }
+.opcao:hover {
+  border-color: var(--cor-texto-secundario);
+  background: var(--cor-superficie);
+}
+.opcao:active { transform: scale(0.995); }
 .opcao:has(input:checked) {
-  background: #eef2f9;
+  border-color: var(--cor-acento);
+  background: var(--cor-acento-claro);
   font-weight: 500;
+}
+.opcao:focus-within {
+  box-shadow: var(--sombra-foco);
+  border-color: var(--cor-acento);
 }
 .opcao input {
   margin: 0;
   width: 20px;
   height: 20px;
-  accent-color: #0f2850;
+  accent-color: var(--cor-acento);
   flex-shrink: 0;
 }
 
-/* ===== Text inputs ===== */
+/* ================================================================
+   Text input / Textarea — borderless com underline no foco
+   ================================================================ */
 textarea, input[type="text"] {
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
+  padding: 14px 2px;
+  border: none;
+  border-bottom: 2px solid var(--cor-borda);
+  border-radius: 0;
   font: inherit;
-  color: #0f2850;
-  background: #ffffff;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  color: var(--cor-texto);
+  background: transparent;
+  font-size: 1.2rem;
+  transition: border-color var(--duracao-rapida) var(--easing);
 }
-textarea { resize: vertical; min-height: 100px; }
+textarea {
+  resize: none;
+  min-height: 120px;
+  padding: 14px 0;
+  line-height: 1.5;
+}
+textarea::placeholder, input[type="text"]::placeholder {
+  color: var(--cor-texto-terciario);
+  opacity: 1;
+}
 textarea:focus, input[type="text"]:focus {
   outline: none;
-  border-color: #0f2850;
-  box-shadow: 0 0 0 3px rgba(15,40,80,0.12);
+  border-bottom-color: var(--cor-acento);
 }
 
-/* ===== Erro ===== */
+/* ================================================================
+   Erro — texto compacto abaixo da resposta
+   ================================================================ */
 .erro {
-  color: #dc2626;
+  color: var(--cor-erro);
   font-size: 0.9rem;
   font-weight: 500;
-  margin: 8px 0 0;
+  margin: 14px 0 0;
   min-height: 1em;
 }
 
-/* ===== Botão principal (branco com texto navy) ===== */
-.botao-principal {
-  display: block;
-  width: 100%;
-  padding: 15px 20px;
-  background: #ffffff;
-  color: #0f2850;
-  border: none;
-  border-radius: 12px;
-  font-size: 1.05rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: transform 0.1s ease, box-shadow 0.15s ease;
-  -webkit-tap-highlight-color: transparent;
+/* ================================================================
+   Barra de ações no rodapé — Voltar + Continuar
+   ================================================================ */
+.acoes {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid var(--cor-borda-sutil);
 }
-.botao-principal:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
-.botao-principal:active { transform: scale(0.985); }
+.acoes .espacador { flex: 1; }
 
-/* ===== Tela final ===== */
-.tela-fim {
-  text-align: center;
-  padding: 40px 20px 20px;
+.botao-principal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: var(--cor-acento);
   color: #ffffff;
+  border: none;
+  border-radius: var(--raio-medio);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--sombra-botao);
+  transition: background var(--duracao-rapida) var(--easing),
+              transform var(--duracao-rapida) var(--easing);
+  -webkit-tap-highlight-color: transparent;
+  min-width: 140px;
 }
+.botao-principal:hover { background: var(--cor-acento-hover); }
+.botao-principal:active { background: var(--cor-acento-pressed); transform: scale(0.985); }
+.botao-principal:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.botao-secundario {
+  background: transparent;
+  color: var(--cor-texto-secundario);
+  border: none;
+  padding: 10px 16px;
+  border-radius: var(--raio-pequeno);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color var(--duracao-rapida) var(--easing), background var(--duracao-rapida) var(--easing);
+}
+.botao-secundario:hover {
+  color: var(--cor-texto);
+  background: var(--cor-superficie);
+}
+
+.botao-pular {
+  background: transparent;
+  color: var(--cor-texto-secundario);
+  border: 1px dashed var(--cor-borda);
+  padding: 10px 16px;
+  border-radius: var(--raio-pequeno);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color var(--duracao-rapida) var(--easing), border-color var(--duracao-rapida) var(--easing);
+}
+.botao-pular:hover { color: var(--cor-texto); border-color: var(--cor-texto-secundario); }
+
+.atalho-teclado {
+  font-size: 0.8rem;
+  color: var(--cor-texto-terciario);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.atalho-teclado kbd {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  color: var(--cor-texto);
+  box-shadow: 0 1px 0 var(--cor-borda-sutil);
+}
+@media (max-width: 640px) {
+  .atalho-teclado { display: none; }
+}
+
+/* ================================================================
+   Tela final — confirmação sóbria
+   ================================================================ */
+.tela-fim { text-align: center; align-items: center; }
 .tela-fim h2 {
-  font-size: 1.6rem;
+  font-size: clamp(1.75rem, 4.5vw, 2.25rem);
   font-weight: 600;
+  letter-spacing: -0.02em;
   margin: 24px 0 12px;
-  letter-spacing: -0.01em;
+  color: var(--cor-texto);
 }
 .tela-fim p {
-  color: rgba(255,255,255,0.85);
-  font-size: 1rem;
+  color: var(--cor-texto-secundario);
+  font-size: 1.05rem;
   margin: 0 auto;
-  max-width: 420px;
+  max-width: 440px;
+  line-height: 1.55;
 }
 .check-sucesso {
-  width: 72px;
-  height: 72px;
-  margin: 0 auto 8px;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto;
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--cor-acento-claro);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -246,110 +411,71 @@ textarea:focus, input[type="text"]:focus {
 }
 .check-sucesso::after {
   content: '';
-  width: 26px;
-  height: 13px;
-  border-left: 3px solid #0f2850;
-  border-bottom: 3px solid #0f2850;
-  transform: rotate(-45deg) translate(2px, -4px);
+  width: 22px;
+  height: 11px;
+  border-left: 2.5px solid var(--cor-acento);
+  border-bottom: 2.5px solid var(--cor-acento);
+  transform: rotate(-45deg) translate(2px, -3px);
 }
 
-/* ================================================
-   Modo entrevista — faixa dourada + ajustes
-   ================================================ */
-body.modo-entrevista { border-top: 3px solid #d4a94a; }
+/* ================================================================
+   Modo entrevista
+   ================================================================ */
+body.modo-entrevista .progresso-fill { background: var(--cor-aviso); }
+body.modo-entrevista .check-sucesso { background: rgba(186,101,0,0.1); }
+body.modo-entrevista .check-sucesso::after {
+  border-left-color: var(--cor-aviso);
+  border-bottom-color: var(--cor-aviso);
+}
 
 .modo-entrevista-tag {
-  display: inline-block;
-  background: #d4a94a;
-  color: #0f2850;
-  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--cor-aviso);
+  color: #ffffff;
+  padding: 4px 10px;
   border-radius: 20px;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  margin-bottom: 16px;
+}
+
+.contador-entrevista {
+  display: inline-block;
+  background: var(--cor-superficie);
+  color: var(--cor-texto-secundario);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  margin: 16px 0 0;
+}
+
+/* Pergunta pulada na entrevista: discreta borda + legenda */
+.pergunta-ativa.pulada .pergunta-titulo { opacity: 0.5; }
+.pergunta-ativa.pulada .pergunta-resposta { opacity: 0.5; }
+.pergunta-ativa.pulada::before {
+  content: "Pulada — toque numa opção para desfazer.";
+  display: block;
+  color: var(--cor-aviso);
+  font-size: 0.85rem;
+  font-weight: 500;
   margin-bottom: 12px;
 }
 
-/* ===== Botão secundário (Voltar) ===== */
-.botao-secundario {
-  background: transparent;
-  color: #ffffff;
-  border: 1px solid rgba(255,255,255,0.4);
-  padding: 14px 20px;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  width: 100%;
-  transition: background 0.15s ease, border-color 0.15s ease;
-}
-.botao-secundario:hover {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.6);
-}
-
-/* ===== Botão pular (por pergunta) ===== */
-.botao-pular {
-  background: transparent;
-  color: #6b7280;
-  border: 1px dashed #cbd5e0;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  margin-top: 12px;
-  transition: color 0.15s ease, border-color 0.15s ease;
-}
-.botao-pular:hover { color: #0f2850; border-color: #0f2850; }
-
-/* ===== Estado "pulada" ===== */
-.pergunta.pulada {
-  opacity: 0.55;
-  box-shadow: none;
-  border: 1px dashed rgba(15,40,80,0.3);
-}
-.pergunta.pulada::after {
-  content: "Pulada — toque numa opção para desfazer.";
-  display: block;
-  color: #6b7280;
-  font-size: 0.85rem;
-  font-style: italic;
-  margin-top: 8px;
-}
-
-/* ===== Ações (Voltar / Próxima lado a lado) ===== */
-.acoes-entrevista {
-  display: flex;
-  gap: 12px;
-  margin-top: 20px;
-}
-.acoes-entrevista > * { flex: 1; margin-top: 0; }
-
-/* ===== Contador por sessão ===== */
-.contador-entrevista {
-  display: inline-block;
-  background: rgba(255,255,255,0.12);
-  color: #ffffff;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin-top: 12px;
-}
-
-/* ===== Status de envio ===== */
 .status-envio {
-  margin-top: 14px;
+  margin-top: 16px;
   font-size: 0.9rem;
   min-height: 1.2em;
   text-align: center;
-  color: rgba(255,255,255,0.8);
+  color: var(--cor-texto-secundario);
 }
-.status-envio.erro { color: #fecaca; }
-.status-envio.ok { color: #86efac; }
-
-.enviando::after {
+.status-envio.erro { color: var(--cor-erro); }
+.status-envio.ok { color: var(--cor-sucesso); }
+.status-envio.enviando::after {
   content: '';
   display: inline-block;
   width: 1em;
@@ -364,37 +490,37 @@ body.modo-entrevista { border-top: 3px solid #d4a94a; }
   100% { content: ''; }
 }
 
-/* ================================================
-   Aviso quando aberto via file:// (JS módulo bloqueado)
-   ================================================ */
+/* ================================================================
+   Aviso quando aberto via file://
+   ================================================================ */
 .aviso-file {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 16px;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
   padding: 28px 24px;
   margin-top: 24px;
-  color: #ffffff;
+  color: var(--cor-texto);
 }
-.aviso-file h1 { font-size: 1.4rem; margin: 0 0 10px; }
-.aviso-file p { color: rgba(255,255,255,0.85); margin: 0 0 16px; line-height: 1.6; }
+.aviso-file h1 { font-size: 1.3rem; margin: 0 0 10px; font-weight: 600; }
+.aviso-file p { color: var(--cor-texto-secundario); margin: 0 0 16px; line-height: 1.6; }
 .aviso-file code {
   display: inline-block;
-  background: rgba(0,0,0,0.3);
-  color: #ffffff;
+  background: var(--cor-bg);
+  color: var(--cor-texto);
   padding: 8px 14px;
-  border-radius: 8px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pequeno);
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   margin: 4px 0;
   user-select: all;
 }
 .aviso-file ol { padding-left: 20px; margin: 0; }
 .aviso-file li { margin-bottom: 14px; }
-.aviso-file a { color: #ffffff; font-weight: 600; }
 
-/* ================================================
-   Preferências / responsivo
-   ================================================ */
+/* ================================================================
+   Reduced motion
+   ================================================================ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     transition: none !important;
@@ -402,11 +528,15 @@ body.modo-entrevista { border-top: 3px solid #d4a94a; }
   }
 }
 
+/* ================================================================
+   Desktop refinements
+   ================================================================ */
 @media (min-width: 720px) {
-  #app { padding: 16px 24px 160px; }
-  .pergunta { padding: 24px; }
-  h1 { font-size: 2rem; }
   .logos { gap: 32px; padding-top: 28px; }
-  .logos .logo-acefb { height: 28px; }
-  .logos .logo-evolve { height: 36px; }
+  .logos .logo-acefb { height: 22px; }
+  .logos .logo-evolve { height: 24px; }
+  #app { padding: 24px 24px 40px; }
+  .tela { padding: 48px 0; }
+  .opcao { padding: 18px 20px; min-height: 60px; font-size: 1.05rem; }
+  textarea, input[type="text"] { font-size: 1.3rem; }
 }
