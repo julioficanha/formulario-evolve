@@ -1,0 +1,23 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color: #0b1b2b; background: #f4f6fa; }
+body { line-height: 1.5; }
+#app { max-width: 640px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 1.6rem; margin: 0 0 4px; color: #0b2a4a; }
+.subtitulo { color: #4a5a70; margin: 0 0 16px; }
+.descricao p { margin: 0 0 12px; }
+.progresso { background: #e2e7ef; height: 6px; border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
+.progresso-fill { background: #0b2a4a; height: 100%; transition: width 0.3s ease; }
+.pergunta { background: #fff; border-radius: 10px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.pergunta-texto { display: block; font-weight: 600; margin-bottom: 8px; }
+.pergunta-descricao { font-size: 0.9rem; color: #4a5a70; margin: 0 0 10px; }
+fieldset { border: none; padding: 0; margin: 0; }
+.opcao { display: flex; align-items: flex-start; gap: 8px; padding: 10px 8px; border-radius: 6px; cursor: pointer; }
+.opcao:hover { background: #f0f3f8; }
+.opcao input { margin-top: 3px; }
+textarea, input[type="text"] { width: 100%; padding: 10px; border: 1px solid #cbd3df; border-radius: 6px; font: inherit; }
+textarea:focus, input:focus { outline: 2px solid #0b2a4a; outline-offset: 2px; }
+.erro { color: #b00020; font-size: 0.9rem; margin: 6px 0 0; min-height: 1em; }
+.botao-principal { display: block; width: 100%; padding: 14px; background: #0b2a4a; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 16px; }
+.botao-principal:hover { background: #143c66; }
+.tela-fim { text-align: center; padding: 40px 20px; }
+@media (min-width: 720px) { #app { padding: 24px; } .pergunta { padding: 20px; } }
