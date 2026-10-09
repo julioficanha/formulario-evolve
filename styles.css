@@ -55,6 +55,24 @@ html, body {
 }
 
 /* ================================================================
+   Marca-texto: destaque estilo marcador atrás da palavra, nas cores
+   da ACEFB (amarelo #d7c823 sobre texto verde-escuro).
+   ================================================================ */
+.marca-texto {
+  background-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    transparent 55%,
+    rgba(215, 200, 35, 0.55) 55%,
+    rgba(215, 200, 35, 0.55) 92%,
+    transparent 92%
+  );
+  background-repeat: no-repeat;
+  padding: 0 0.1em;
+  border-radius: 2px;
+}
+
+/* ================================================================
    Header com logo ACEFB — centralizado, altura modesta
    ================================================================ */
 .marca {

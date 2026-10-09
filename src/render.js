@@ -5,7 +5,7 @@ export function renderInicio(descricao) {
   const el = document.createElement('section');
   el.className = 'tela tela-inicio';
   el.innerHTML = `
-    <h1>ACEFB na sua visão</h1>
+    <h1><span class="marca-texto">ACEFB</span> na sua visão</h1>
     <div class="descricao">${descricao.split('\n\n').map(p => `<p>${p}</p>`).join('')}</div>
   `;
   return el;
