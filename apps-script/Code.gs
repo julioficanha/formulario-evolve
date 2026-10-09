@@ -56,3 +56,10 @@ function montarLinha_(body) {
   }
   return linha;
 }
+
+// Rode esta função 1x no editor Apps Script pra autorizar o acesso
+// Sheets. Depois disso o Web App funciona para submissões anônimas.
+function autorizar() {
+  garantirAba_(ABA_PUBLICA);
+  garantirAba_(ABA_ENTREVISTA);
+}

@@ -1,4 +1,4 @@
-export const APPS_SCRIPT_URL = 'TROQUE_PELA_URL_DO_APPS_SCRIPT_WEB_APP';
+export const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4Jj0EVsNF6TEph2tmRQ9rARfjogaV8K0RAHU_r1rsHW5G2zZK5osgEKXwgiOJ-Wjj/exec';
 
 const PREFIXO_FILA = 'acefb-resposta-pendente-';
 
