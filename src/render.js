@@ -86,6 +86,7 @@ function renderRadio(pergunta, valor, onChange) {
 
 function renderCheckbox(pergunta, valorAtual, onChange) {
   const fieldset = document.createElement('fieldset');
+  const inputs = [];
   for (const opcao of pergunta.opcoes) {
     const id = `${pergunta.id}-${slug(opcao)}`;
     const wrapper = document.createElement('label');
@@ -97,16 +98,25 @@ function renderCheckbox(pergunta, valorAtual, onChange) {
     input.value = opcao;
     if (valorAtual.includes(opcao)) input.checked = true;
     input.addEventListener('change', (e) => {
+      // Fonte da verdade = DOM. Ler do closure deixa estado estagnado
+      // após o primeiro clique e perde opções anteriores.
+      const marcadasAgora = inputs.filter(i => i.checked).map(i => i.value);
       let novaSelecao;
       if (e.target.checked) {
-        novaSelecao = aplicarRegrasExclusividade(pergunta, valorAtual, opcao);
+        novaSelecao = aplicarRegrasExclusividade(
+          pergunta,
+          marcadasAgora.filter(o => o !== opcao),
+          opcao
+        );
       } else {
-        novaSelecao = valorAtual.filter(o => o !== opcao);
+        novaSelecao = marcadasAgora;
       }
+      for (const i of inputs) i.checked = novaSelecao.includes(i.value);
       onChange(pergunta.id, novaSelecao);
     });
     wrapper.appendChild(input);
     wrapper.appendChild(document.createTextNode(' ' + opcao));
+    inputs.push(input);
     fieldset.appendChild(wrapper);
   }
   return fieldset;
