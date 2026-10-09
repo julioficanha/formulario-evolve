@@ -4,7 +4,7 @@
 //   Quem pode acessar: Qualquer pessoa
 // Depois copie a URL /exec e cole em src/submit.js (APPS_SCRIPT_URL).
 
-const SPREADSHEET_ID = 'TROQUE_PELO_ID_DA_PLANILHA';
+const SPREADSHEET_ID = '174I4M8bVNgpHChbUBz6YVcEHU9WomZUF0nhCFaiMq1w';
 const ABA_PUBLICA = 'Respostas';
 const ABA_ENTREVISTA = 'Entrevistas';
 const CABECALHO = [
