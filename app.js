@@ -1,4 +1,4 @@
-import { descricaoInicial, mensagemFinal, perguntas } from './src/perguntas.js';
+import { descricaoInicial, mensagemFinal } from './src/perguntas.js';
 import { renderInicio, renderSecao, renderFim } from './src/render.js';
 import { proximaSecao, perguntasDaSecao } from './src/estado.js';
 import { validarResposta } from './src/validacao.js';
@@ -6,7 +6,6 @@ import { enviarRespostas } from './src/submit.js';
 
 const estado = {
   tela: 'inicio',       // 'inicio' | number (secao) | 'fim'
-  secaoAtual: 0,
   respostas: {},
 };
 
@@ -14,7 +13,7 @@ const appEl = document.getElementById('app');
 
 function render() {
   appEl.innerHTML = '';
-  appEl.appendChild(renderProgresso());
+  renderCabecalhoProgresso();
 
   if (estado.tela === 'inicio') {
     appEl.appendChild(renderInicio(descricaoInicial));
@@ -23,17 +22,25 @@ function render() {
     appEl.appendChild(renderFim(mensagemFinal));
   } else {
     appEl.appendChild(renderSecao(estado.tela, estado.respostas, onChangeResposta));
-    appEl.appendChild(botao('Próxima', avancar));
+    const label = estado.tela === 7 ? 'Enviar' : 'Próxima';
+    appEl.appendChild(botao(label, avancar));
   }
 }
 
-function renderProgresso() {
+function renderCabecalhoProgresso() {
   const bar = document.createElement('div');
   bar.className = 'progresso';
   const atual = typeof estado.tela === 'number' ? estado.tela : (estado.tela === 'fim' ? 7 : 0);
-  const pct = Math.round(((atual - 1) / 7) * 100);
+  const pct = estado.tela === 'fim' ? 100 : Math.round(((atual - 1) / 7) * 100);
   bar.innerHTML = `<div class="progresso-fill" style="width:${Math.max(0, pct)}%"></div>`;
-  return bar;
+  appEl.appendChild(bar);
+
+  if (typeof estado.tela === 'number') {
+    const label = document.createElement('p');
+    label.className = 'progresso-label';
+    label.textContent = `Seção ${estado.tela} de 7`;
+    appEl.appendChild(label);
+  }
 }
 
 function botao(label, onClick) {

@@ -31,14 +31,14 @@ const appEl = document.getElementById('app');
 
 function render() {
   appEl.innerHTML = '';
-  appEl.appendChild(renderCabecalho());
-  appEl.appendChild(renderProgresso());
+  renderCabecalhoProgresso();
 
   if (estado.tela === 'inicio') {
     appEl.appendChild(renderInicio());
   } else if (estado.tela === 'fim') {
     // Tela final é construída pelo enviar()
   } else {
+    appEl.appendChild(renderCabecalhoSecao());
     appEl.appendChild(renderSecao(estado.tela, estado.respostas, onChangeResposta));
     marcarPuladasNoDom();
     adicionarBotoesPular();
@@ -46,23 +46,26 @@ function render() {
   }
 }
 
-function renderCabecalho() {
-  const el = document.createElement('div');
-  el.innerHTML = `
-    <div class="modo-entrevista-tag">Modo entrevista</div>
-    <h1>ACEFB na sua visão</h1>
-    <p class="subtitulo">Percepções sobre a ACEFB</p>
-  `;
-  return el;
-}
-
-function renderProgresso() {
+function renderCabecalhoProgresso() {
   const bar = document.createElement('div');
   bar.className = 'progresso';
   const atual = typeof estado.tela === 'number' ? estado.tela : (estado.tela === 'fim' ? 7 : 0);
-  const pct = Math.round(((atual - 1) / 7) * 100);
+  const pct = estado.tela === 'fim' ? 100 : Math.round(((atual - 1) / 7) * 100);
   bar.innerHTML = `<div class="progresso-fill" style="width:${Math.max(0, pct)}%"></div>`;
-  return bar;
+  appEl.appendChild(bar);
+
+  if (typeof estado.tela === 'number') {
+    const label = document.createElement('p');
+    label.className = 'progresso-label';
+    label.textContent = `Seção ${estado.tela} de 7`;
+    appEl.appendChild(label);
+  }
+}
+
+function renderCabecalhoSecao() {
+  const el = document.createElement('div');
+  el.innerHTML = `<div class="modo-entrevista-tag">Modo entrevista</div>`;
+  return el;
 }
 
 function renderInicio() {
@@ -70,12 +73,15 @@ function renderInicio() {
   const el = document.createElement('section');
   el.className = 'tela tela-inicio';
   el.innerHTML = `
+    <div class="modo-entrevista-tag">Modo entrevista</div>
+    <h1>ACEFB na sua visão</h1>
+    <p class="subtitulo">Entrevista presencial</p>
     <div class="descricao">
-      <p><strong>Entrevista presencial.</strong> Preencha conforme a conversa com a
-      pessoa. Todas as perguntas aparecem na ordem, sem desvios. Use
-      <em>Pular pergunta</em> quando a pessoa recusar responder, e
-      <em>Voltar</em> para corrigir.</p>
-      <p>Entrevistas enviadas nesta sessão: <strong>${n}</strong>.</p>
+      <p>Preencha conforme a conversa. Todas as perguntas aparecem na ordem, sem desvios.</p>
+      <p>Use <strong>Pular pergunta</strong> quando a pessoa recusar responder e <strong>Voltar</strong> para corrigir.</p>
+    </div>
+    <div style="text-align:center">
+      <div class="contador-entrevista">Entrevistas enviadas: ${n}</div>
     </div>
   `;
   const btn = document.createElement('button');
@@ -240,16 +246,17 @@ async function enviar() {
 
 function renderTelaFinal(n, estadoEnvio, _ignored) {
   appEl.innerHTML = '';
-  appEl.appendChild(renderCabecalho());
-  appEl.appendChild(renderProgresso());
+  renderCabecalhoProgresso();
 
   const el = document.createElement('section');
   el.className = 'tela tela-fim';
+  const classeStatus = estadoEnvio === 'enviando' ? 'status-envio enviando' : 'status-envio';
+  const textoStatus = estadoEnvio === 'enviando' ? 'Enviando' : '';
   el.innerHTML = `
-    <h2>Entrevista enviada</h2>
-    <div class="contador-entrevista">Entrevista #${n}</div>
+    <div class="check-sucesso" aria-hidden="true"></div>
+    <h2>Entrevista #${n} enviada</h2>
     <p>${mensagemFinal}</p>
-    <div class="status-envio" id="statusEnvio">${estadoEnvio === 'enviando' ? 'Enviando...' : ''}</div>
+    <div class="${classeStatus}" id="statusEnvio">${textoStatus}</div>
   `;
   const acoes = document.createElement('div');
   acoes.className = 'acoes-entrevista';
@@ -272,7 +279,7 @@ function adicionarBotaoReenviar(corpo, n) {
   btn.textContent = 'Tentar reenviar';
   btn.addEventListener('click', async () => {
     btn.disabled = true;
-    atualizarStatus('Reenviando...', '');
+    atualizarStatus('Reenviando', 'enviando');
     try {
       const resp = await fetch(APPS_SCRIPT_URL, {
         method: 'POST',

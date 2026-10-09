@@ -4,78 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0f2850" />
   <title>Entrevista — ACEFB na sua visão</title>
   <link rel="stylesheet" href="styles.css" />
-  <style>
-    .modo-entrevista-tag {
-      display: inline-block;
-      background: #f59e0b;
-      color: #1f2937;
-      padding: 2px 10px;
-      border-radius: 10px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-bottom: 8px;
-    }
-    .acoes-entrevista {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-    }
-    .acoes-entrevista > * { flex: 1; }
-    .botao-secundario {
-      background: #fff;
-      color: #0b2a4a;
-      border: 1px solid #0b2a4a;
-      padding: 14px;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .botao-secundario:hover { background: #e7eef7; }
-    .botao-pular {
-      background: transparent;
-      color: #6b7280;
-      border: 1px dashed #cbd5e0;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      margin-top: 8px;
-    }
-    .botao-pular:hover { color: #0b2a4a; border-color: #0b2a4a; }
-    .pergunta.pulada { opacity: 0.5; }
-    .pergunta.pulada::after {
-      content: "Pulada. Marque uma opção ou escreva para desfazer.";
-      display: block;
-      color: #6b7280;
-      font-size: 0.85rem;
-      font-style: italic;
-      margin-top: 6px;
-    }
-    .contador-entrevista {
-      display: inline-block;
-      background: #e7eef7;
-      color: #0b2a4a;
-      padding: 4px 14px;
-      border-radius: 20px;
-      font-weight: 600;
-      margin-top: 10px;
-    }
-    .status-envio {
-      margin-top: 10px;
-      font-size: 0.9rem;
-      min-height: 1.2em;
-      text-align: center;
-    }
-    .status-envio.erro { color: #b00020; }
-    .status-envio.ok { color: #166534; }
-  </style>
 </head>
-<body>
+<body class="modo-entrevista">
+  <header class="logos" aria-label="Parceria">
+    <img src="assets/acefb-logo.svg" alt="ACEFB" class="logo-acefb" />
+    <span class="logo-placeholder">Oktoberfest<br />Beltrão 2026</span>
+    <img src="assets/evolve-logo.png" alt="Evolve" class="logo-evolve" />
+  </header>
   <main id="app" aria-live="polite"></main>
   <script type="module" src="entrevista.js"></script>
 </body>
