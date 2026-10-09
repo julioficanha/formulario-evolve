@@ -1,12 +1,25 @@
 import { perguntasDaSecao } from './estado.js';
 import { aplicarRegrasExclusividade } from './validacao.js';
 
+function destacar(texto) {
+  // Converte [[trecho]] em <span class="marca-texto">trecho</span>.
+  // Escapa HTML do conteúdo (defesa barata contra conteúdo futuro
+  // com caracteres como < > &).
+  return texto.replace(/\[\[([^\]]+)\]\]/g, (_, inner) => {
+    const seguro = inner
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    return `<span class="marca-texto">${seguro}</span>`;
+  });
+}
+
 export function renderInicio(descricao) {
   const el = document.createElement('section');
   el.className = 'tela tela-inicio';
   el.innerHTML = `
-    <h1><span class="marca-texto">ACEFB</span> na sua visão</h1>
-    <div class="descricao">${descricao.split('\n\n').map(p => `<p>${p}</p>`).join('')}</div>
+    <h1><span class="marca-texto">ACEFB na sua visão</span></h1>
+    <div class="descricao">${descricao.split('\n\n').map(p => `<p>${destacar(p)}</p>`).join('')}</div>
   `;
   return el;
 }

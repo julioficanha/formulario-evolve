@@ -62,14 +62,15 @@ html, body {
   background-image: linear-gradient(
     180deg,
     transparent 0%,
-    transparent 55%,
-    rgba(215, 200, 35, 0.55) 55%,
-    rgba(215, 200, 35, 0.55) 92%,
-    transparent 92%
+    transparent 52%,
+    rgba(215, 200, 35, 0.6) 52%,
+    rgba(215, 200, 35, 0.6) 94%,
+    transparent 94%
   );
-  background-repeat: no-repeat;
-  padding: 0 0.1em;
+  padding: 0 0.12em;
   border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 /* ================================================================
