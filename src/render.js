@@ -1,25 +1,33 @@
 import { perguntasDaSecao } from './estado.js';
 import { aplicarRegrasExclusividade } from './validacao.js';
 
-function destacar(texto) {
-  // Converte [[trecho]] em <span class="marca-texto">trecho</span>.
-  // Escapa HTML do conteúdo (defesa barata contra conteúdo futuro
-  // com caracteres como < > &).
+// Converte [[trecho]] em <span class="marca-texto">trecho</span>.
+// Escapa HTML. Insere animation-delay progressivo pra encadear os
+// highlights como um marcador passando por cada trecho em sequência.
+function destacar(texto, estado) {
   return texto.replace(/\[\[([^\]]+)\]\]/g, (_, inner) => {
+    const delay = 0.15 + estado.idx * 0.3;
+    estado.idx += 1;
     const seguro = inner
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
-    return `<span class="marca-texto">${seguro}</span>`;
+    return `<span class="marca-texto" style="animation-delay:${delay}s">${seguro}</span>`;
   });
 }
 
 export function renderInicio(descricao) {
   const el = document.createElement('section');
   el.className = 'tela tela-inicio';
+  const estado = { idx: 0 };
+  const tituloHtml = destacar('[[ACEFB na sua visão]]', estado);
+  const descHtml = descricao
+    .split('\n\n')
+    .map(p => `<p>${destacar(p, estado)}</p>`)
+    .join('');
   el.innerHTML = `
-    <h1><span class="marca-texto">ACEFB na sua visão</span></h1>
-    <div class="descricao">${descricao.split('\n\n').map(p => `<p>${destacar(p)}</p>`).join('')}</div>
+    <h1>${tituloHtml}</h1>
+    <div class="descricao">${descHtml}</div>
   `;
   return el;
 }
