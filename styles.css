@@ -5,30 +5,31 @@
    ================================================================ */
 
 :root {
-  --cor-bg: #f0f4f8;
+  --cor-bg: #ffffff;
   --cor-superficie: #ffffff;
-  --cor-superficie-hover: #e8eef5;
-  --cor-superficie-ativa: rgba(88,124,165,0.12);
-  --cor-texto: #253247;
-  --cor-texto-secundario: #5a6578;
-  --cor-texto-terciario: #8894a8;
-  --cor-borda: #dce3eb;
-  --cor-borda-sutil: rgba(37,50,71,0.08);
-  --cor-acento: #587ca5;
-  --cor-acento-hover: #4c6e95;
-  --cor-acento-pressed: #3f5f82;
-  --cor-acento-claro: rgba(88,124,165,0.12);
+  --cor-superficie-hover: #f1f5f3;
+  --cor-superficie-ativa: rgba(33,72,64,0.08);
+  --cor-texto: #1a3a33;
+  --cor-texto-secundario: #5a6a65;
+  --cor-texto-terciario: #8c9a95;
+  --cor-borda: #dde3df;
+  --cor-borda-sutil: rgba(33,72,64,0.1);
+  --cor-acento: #214840;
+  --cor-acento-hover: #1a3a33;
+  --cor-acento-pressed: #122b26;
+  --cor-acento-claro: rgba(33,72,64,0.1);
+  --cor-destaque: #d7c823;
   --cor-erro: #b3384f;
   --cor-sucesso: #3a8f66;
-  --cor-aviso: #a67822;
+  --cor-aviso: #b5a01f;
 
   --raio-pequeno: 8px;
   --raio-medio: 12px;
   --raio-grande: 16px;
 
-  --sombra-sutil: 0 1px 3px rgba(37,50,71,0.05);
-  --sombra-botao: 0 2px 6px rgba(88,124,165,0.25);
-  --sombra-foco: 0 0 0 4px rgba(88,124,165,0.18);
+  --sombra-sutil: 0 1px 3px rgba(33,72,64,0.06);
+  --sombra-botao: 0 2px 6px rgba(33,72,64,0.22);
+  --sombra-foco: 0 0 0 4px rgba(33,72,64,0.15);
 
   --easing: cubic-bezier(0.4, 0.0, 0.2, 1);
   --duracao-rapida: 150ms;
@@ -54,27 +55,26 @@ html, body {
 }
 
 /* ================================================================
-   Header de parceria — texto único, discreto
+   Header com logo ACEFB — centralizado, altura modesta
    ================================================================ */
-.parceria {
+.marca {
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 24px 20px 8px;
 }
-.parceria-texto {
-  font-size: 1.5rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--cor-texto);
-  line-height: 1.2;
-  text-align: center;
+.marca img {
+  display: block;
+  height: 44px;
+  width: auto;
+  max-width: 100%;
 }
 @media (max-width: 400px) {
-  .parceria { padding: 20px 16px 6px; }
-  .parceria-texto { font-size: 1.25rem; }
+  .marca { padding: 20px 16px 6px; }
+  .marca img { height: 36px; }
 }
 @media (max-width: 340px) {
-  .parceria-texto { font-size: 1.1rem; }
+  .marca img { height: 30px; }
 }
 
 /* ================================================================
@@ -513,8 +513,8 @@ body.modo-entrevista .check-sucesso::after {
    Desktop refinements
    ================================================================ */
 @media (min-width: 720px) {
-  .parceria { padding-top: 32px; }
-  .parceria-texto { font-size: 1.75rem; }
+  .marca { padding-top: 32px; }
+  .marca img { height: 52px; }
   #app { padding: 24px 24px 40px; }
   .tela { padding: 48px 0; }
   .opcao { padding: 18px 20px; min-height: 60px; font-size: 1.05rem; }
