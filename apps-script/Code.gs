@@ -5,7 +5,8 @@
 // Depois copie a URL /exec e cole em src/submit.js (APPS_SCRIPT_URL).
 
 const SPREADSHEET_ID = 'TROQUE_PELO_ID_DA_PLANILHA';
-const ABA = 'Respostas';
+const ABA_PUBLICA = 'Respostas';
+const ABA_ENTREVISTA = 'Entrevistas';
 const CABECALHO = [
   'timestamp_iso', 'uuid',
   'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9', 'p10',
@@ -16,7 +17,8 @@ const SEPARADOR = ' | ';
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
-    const sheet = garantirAba_();
+    const nomeAba = body.modo === 'entrevista' ? ABA_ENTREVISTA : ABA_PUBLICA;
+    const sheet = garantirAba_(nomeAba);
     const linha = montarLinha_(body);
     sheet.appendRow(linha);
     return ContentService
@@ -29,11 +31,11 @@ function doPost(e) {
   }
 }
 
-function garantirAba_() {
+function garantirAba_(nome) {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  let sheet = ss.getSheetByName(ABA);
+  let sheet = ss.getSheetByName(nome);
   if (!sheet) {
-    sheet = ss.insertSheet(ABA);
+    sheet = ss.insertSheet(nome);
     sheet.appendRow(CABECALHO);
   } else if (sheet.getLastRow() === 0) {
     sheet.appendRow(CABECALHO);
