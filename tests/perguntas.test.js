@@ -61,3 +61,8 @@ test('spot-check: p1 tem o texto e opções literais do PDF', () => {
 test('spot-check: mensagemFinal é literal do PDF', () => {
   assert.equal(mensagemFinal, 'Agradecemos sua disponibilidade. Esta pesquisa é anônima e não gera contato comercial.');
 });
+
+test('spot-check: p7 descricao começa com "marque" minúsculo (como no PDF)', () => {
+  const p7 = perguntas.find(p => p.id === 'p7');
+  assert.equal(p7.descricao, 'marque até duas opções. Se escolher "Nenhum desses públicos" ou "Não sei dizer", marque somente essa opção.');
+});

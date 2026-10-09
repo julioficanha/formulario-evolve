@@ -87,7 +87,7 @@ export const perguntas = [
     tipo: 'checkbox',
     obrigatoria: true,
     maxEscolhas: 2,
-    descricao: 'Marque até duas opções. Se escolher "Nenhum desses públicos" ou "Não sei dizer", marque somente essa opção.',
+    descricao: 'marque até duas opções. Se escolher "Nenhum desses públicos" ou "Não sei dizer", marque somente essa opção.',
     opcoes: [
       'Micro e pequenos empresários e autônomos.',
       'Médios e grandes empresários.',
