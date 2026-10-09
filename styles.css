@@ -130,12 +130,13 @@ html, body {
     flex-wrap: nowrap;
     gap: 14px;
     padding: 20px 8px 6px;
+    transform: translate(-10px, 12px);
   }
   .logo-item { gap: 10px; }
   .logo-mark { height: 42px; }
   .logo-nome { font-size: 1.5rem; }
   .logo-oktoberfest-img { height: 75px; }
-  .logo-acefb { transform: translateY(6px); }
+  .logo-acefb { margin-right: 14px; transform: translateY(6px); }
 }
 @media (max-width: 400px) {
   .logos { gap: 6px; padding: 16px 2px 4px; }
@@ -143,11 +144,13 @@ html, body {
   .logo-mark { height: 32px; }
   .logo-nome { font-size: 1.2rem; }
   .logo-oktoberfest-img { height: 58px; }
+  .logo-acefb { margin-right: 10px; }
 }
 @media (max-width: 340px) {
   .logo-mark { height: 28px; }
   .logo-nome { font-size: 1.05rem; }
   .logo-oktoberfest-img { height: 52px; }
+  .logo-acefb { margin-right: 8px; }
 }
 
 /* ================================================================
