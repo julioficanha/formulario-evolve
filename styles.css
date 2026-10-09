@@ -110,10 +110,36 @@ html, body {
   text-align: center;
   line-height: 1.25;
 }
+.logo-oktoberfest-img {
+  display: block;
+  height: 44px;
+  width: auto;
+}
 @media (prefers-color-scheme: dark) {
   .logo-acefb .logo-mark { color: #e5e5e7; }
   .logo-acefb .logo-nome { color: #e5e5e7; }
   .logo-evolve .logo-nome { color: #d4a94a; }
+}
+
+/* No celular, mantém a linha horizontal única (nowrap) e encolhe tudo
+   proporcionalmente até caber. Dois breakpoints: mobile normal e muito
+   estreito. */
+@media (max-width: 520px) {
+  .logos {
+    flex-wrap: nowrap;
+    gap: 14px;
+    padding: 14px 12px 4px;
+  }
+  .logo-item { gap: 6px; }
+  .logo-mark { height: 20px; }
+  .logo-nome { font-size: 0.85rem; }
+  .logo-oktoberfest-img { height: 36px; }
+}
+@media (max-width: 380px) {
+  .logos { gap: 10px; padding: 12px 8px 4px; }
+  .logo-mark { height: 18px; }
+  .logo-nome { font-size: 0.78rem; }
+  .logo-oktoberfest-img { height: 32px; }
 }
 
 /* ================================================================
@@ -555,6 +581,7 @@ body.modo-entrevista .check-sucesso::after {
   .logos { gap: 40px; padding-top: 28px; }
   .logo-mark { height: 30px; }
   .logo-nome { font-size: 1.1rem; }
+  .logo-oktoberfest-img { height: 52px; }
   #app { padding: 24px 24px 40px; }
   .tela { padding: 48px 0; }
   .opcao { padding: 18px 20px; min-height: 60px; font-size: 1.05rem; }
