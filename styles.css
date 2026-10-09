@@ -123,23 +123,25 @@ html, body {
 
 /* No celular, mantém a linha horizontal única (nowrap) e encolhe tudo
    proporcionalmente até caber. Dois breakpoints: mobile normal e muito
-   estreito. */
+   estreito. ACEFB ganha um deslocamento vertical sutil para enquadrar
+   visualmente com a Oktoberfest (que é mais alta). */
 @media (max-width: 520px) {
   .logos {
     flex-wrap: nowrap;
-    gap: 14px;
-    padding: 14px 12px 4px;
+    gap: 18px;
+    padding: 18px 12px 6px;
   }
-  .logo-item { gap: 6px; }
-  .logo-mark { height: 20px; }
-  .logo-nome { font-size: 0.85rem; }
-  .logo-oktoberfest-img { height: 36px; }
+  .logo-item { gap: 8px; }
+  .logo-mark { height: 28px; }
+  .logo-nome { font-size: 1rem; }
+  .logo-oktoberfest-img { height: 50px; }
+  .logo-acefb { transform: translateY(3px); }
 }
 @media (max-width: 380px) {
-  .logos { gap: 10px; padding: 12px 8px 4px; }
-  .logo-mark { height: 18px; }
-  .logo-nome { font-size: 0.78rem; }
-  .logo-oktoberfest-img { height: 32px; }
+  .logos { gap: 12px; padding: 14px 8px 6px; }
+  .logo-mark { height: 24px; }
+  .logo-nome { font-size: 0.88rem; }
+  .logo-oktoberfest-img { height: 42px; }
 }
 
 /* ================================================================
