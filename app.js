@@ -1,100 +1,182 @@
-import { descricaoInicial, mensagemFinal } from './src/perguntas.js';
-import { renderInicio, renderSecao, renderFim } from './src/render.js';
-import { proximaSecao, perguntasDaSecao } from './src/estado.js';
+import { descricaoInicial, mensagemFinal, perguntas } from './src/perguntas.js';
+import { renderInicio, renderFim, renderPerguntaUnica } from './src/render.js';
+import { proximaPergunta } from './src/estado.js';
 import { validarResposta } from './src/validacao.js';
 import { enviarRespostas } from './src/submit.js';
 
+// Uma pergunta por tela. estado.tela guarda o id da pergunta ativa
+// ('p1'...'p20') ou os marcadores 'inicio' e 'fim'. historico empilha
+// perguntas visitadas para o botão Voltar reconstruir o caminho exato.
 const estado = {
-  tela: 'inicio',       // 'inicio' | number (secao) | 'fim'
+  tela: 'inicio',
   respostas: {},
+  historico: [],
 };
 
 const appEl = document.getElementById('app');
 
 function render() {
   appEl.innerHTML = '';
-  renderCabecalhoProgresso();
+  appEl.appendChild(renderProgresso());
 
   if (estado.tela === 'inicio') {
     appEl.appendChild(renderInicio(descricaoInicial));
-    appEl.appendChild(botao('Começar', iniciar));
+    appEl.appendChild(renderAcoesInicio());
   } else if (estado.tela === 'fim') {
     appEl.appendChild(renderFim(mensagemFinal));
   } else {
-    appEl.appendChild(renderSecao(estado.tela, estado.respostas, onChangeResposta));
-    const label = estado.tela === 7 ? 'Enviar' : 'Próxima';
-    appEl.appendChild(botao(label, avancar));
+    const pergunta = perguntas.find(p => p.id === estado.tela);
+    appEl.appendChild(renderPerguntaUnica(pergunta, estado.respostas[pergunta.id], onChangeResposta));
+    appEl.appendChild(renderAcoesPergunta(pergunta));
+    focarPrimeiroCampo();
   }
 }
 
-function renderCabecalhoProgresso() {
+function renderProgresso() {
   const bar = document.createElement('div');
   bar.className = 'progresso';
-  const atual = typeof estado.tela === 'number' ? estado.tela : (estado.tela === 'fim' ? 7 : 0);
-  const pct = estado.tela === 'fim' ? 100 : Math.round(((atual - 1) / 7) * 100);
-  bar.innerHTML = `<div class="progresso-fill" style="width:${Math.max(0, pct)}%"></div>`;
-  appEl.appendChild(bar);
-
-  if (typeof estado.tela === 'number') {
-    const label = document.createElement('p');
-    label.className = 'progresso-label';
-    label.textContent = `Seção ${estado.tela} de 7`;
-    appEl.appendChild(label);
-  }
+  const fill = document.createElement('div');
+  fill.className = 'progresso-fill';
+  fill.style.width = calcProgresso() + '%';
+  bar.appendChild(fill);
+  return bar;
 }
 
-function botao(label, onClick) {
-  const b = document.createElement('button');
-  b.className = 'botao-principal';
-  b.textContent = label;
-  b.addEventListener('click', onClick);
-  return b;
+function calcProgresso() {
+  if (estado.tela === 'inicio') return 0;
+  if (estado.tela === 'fim') return 100;
+  const idx = perguntas.findIndex(p => p.id === estado.tela);
+  return Math.round(((idx + 1) / perguntas.length) * 100);
+}
+
+function renderAcoesInicio() {
+  const acoes = document.createElement('div');
+  acoes.className = 'acoes';
+  const espacador = document.createElement('div');
+  espacador.className = 'espacador';
+  acoes.appendChild(espacador);
+
+  const btn = document.createElement('button');
+  btn.className = 'botao-principal';
+  btn.textContent = 'Começar';
+  btn.addEventListener('click', iniciar);
+  acoes.appendChild(btn);
+
+  const atalho = document.createElement('span');
+  atalho.className = 'atalho-teclado';
+  atalho.innerHTML = 'Pressione <kbd>Enter</kbd>';
+  acoes.appendChild(atalho);
+
+  return acoes;
+}
+
+function renderAcoesPergunta(pergunta) {
+  const acoes = document.createElement('div');
+  acoes.className = 'acoes';
+
+  if (estado.historico.length > 0) {
+    const voltar = document.createElement('button');
+    voltar.className = 'botao-secundario';
+    voltar.textContent = '← Voltar';
+    voltar.addEventListener('click', voltarPergunta);
+    acoes.appendChild(voltar);
+  }
+
+  const espacador = document.createElement('div');
+  espacador.className = 'espacador';
+  acoes.appendChild(espacador);
+
+  const label = ehUltimaPergunta(pergunta) ? 'Enviar' : 'Continuar';
+  const btn = document.createElement('button');
+  btn.className = 'botao-principal';
+  btn.textContent = label;
+  btn.addEventListener('click', avancar);
+  acoes.appendChild(btn);
+
+  const atalho = document.createElement('span');
+  atalho.className = 'atalho-teclado';
+  atalho.innerHTML = 'Pressione <kbd>Enter</kbd>';
+  acoes.appendChild(atalho);
+
+  return acoes;
+}
+
+function ehUltimaPergunta(pergunta) {
+  // Se qualquer caminho natural a partir desta pergunta leva a 'fim', vira "Enviar".
+  // Cheap heurística: simula com as respostas atuais.
+  const prox = proximaPergunta(pergunta.id, estado.respostas);
+  return prox === 'fim';
+}
+
+function focarPrimeiroCampo() {
+  const campo = appEl.querySelector('textarea, input[type="text"]');
+  if (campo) campo.focus();
 }
 
 function onChangeResposta(perguntaId, valor) {
   estado.respostas[perguntaId] = valor;
-  // Limpa mensagem de erro, se houver
   const erroEl = appEl.querySelector(`[data-erro-para="${perguntaId}"]`);
   if (erroEl) erroEl.textContent = '';
+  // Atualiza label do botão "Continuar/Enviar" conforme a resposta pode mudar
+  // o próximo passo (branching sensível a resposta).
+  atualizarLabelContinuar();
+}
+
+function atualizarLabelContinuar() {
+  if (typeof estado.tela !== 'string' || estado.tela === 'inicio' || estado.tela === 'fim') return;
+  const pergunta = perguntas.find(p => p.id === estado.tela);
+  if (!pergunta) return;
+  const btn = appEl.querySelector('.acoes .botao-principal');
+  if (!btn) return;
+  btn.textContent = ehUltimaPergunta(pergunta) ? 'Enviar' : 'Continuar';
 }
 
 function iniciar() {
-  estado.tela = 1;
+  estado.historico.push('inicio');
+  estado.tela = perguntas[0].id;
+  render();
+}
+
+function voltarPergunta() {
+  const anterior = estado.historico.pop();
+  if (!anterior) return;
+  estado.tela = anterior;
   render();
 }
 
 function avancar() {
-  const secao = estado.tela;
-  const perguntasSecao = perguntasDaSecao(secao);
-  let primeiroErro = null;
-  for (const p of perguntasSecao) {
-    const { ok, erro } = validarResposta(p, estado.respostas[p.id]);
-    if (!ok) {
-      const erroEl = appEl.querySelector(`[data-erro-para="${p.id}"]`);
-      if (erroEl) erroEl.textContent = erro;
-      if (!primeiroErro) primeiroErro = p.id;
-    }
-  }
-  if (primeiroErro) {
-    const el = appEl.querySelector(`[data-id="${primeiroErro}"]`);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (estado.tela === 'inicio') return iniciar();
+  const pergunta = perguntas.find(p => p.id === estado.tela);
+  if (!pergunta) return;
+
+  const { ok, erro } = validarResposta(pergunta, estado.respostas[pergunta.id]);
+  if (!ok) {
+    const erroEl = appEl.querySelector(`[data-erro-para="${pergunta.id}"]`);
+    if (erroEl) erroEl.textContent = erro;
     return;
   }
 
-  const prox = proximaSecao(secao, estado.respostas);
-  if (prox === 'fim') {
-    finalizar();
-  } else {
-    estado.tela = prox;
-    render();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  const prox = proximaPergunta(pergunta.id, estado.respostas);
+  estado.historico.push(estado.tela);
+
+  if (prox === 'fim') return finalizar();
+  estado.tela = prox;
+  render();
 }
 
-async function finalizar() {
+function finalizar() {
   estado.tela = 'fim';
   render();
-  enviarRespostas(estado.respostas);  // fire-and-forget: tela final já apareceu
+  enviarRespostas(estado.respostas); // fire-and-forget
 }
+
+// Enter avança (exceto quando o foco está em textarea — nela, Enter cria linha).
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  if (e.target.tagName === 'TEXTAREA') return;
+  if (e.target.tagName === 'BUTTON') return;
+  e.preventDefault();
+  avancar();
+});
 
 render();

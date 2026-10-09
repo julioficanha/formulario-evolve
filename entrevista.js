@@ -1,68 +1,62 @@
-// Variante entrevista — fluxo linear p1 → p20 (ignora branching), com
-// botões Voltar e Pular, tela final própria com contador de sessão e
-// payload com `modo: "entrevista"` para o Apps Script rotear para a aba
-// `Entrevistas`.
-//
-// Dependências (criadas pela outra IA, arquitetura ES modules):
-//   src/perguntas.js   — perguntas, mensagemFinal
-//   src/estado.js      — perguntasDaSecao
-//   src/validacao.js   — validarResposta
-//   src/render.js      — renderSecao
-//   src/submit.js      — APPS_SCRIPT_URL, gerarUuid
-//
-// Esta variante NÃO usa proximaSecao, nem a tela de encerramento padrão,
-// nem o retry via localStorage (entrevista é presencial).
+// Variante entrevista — mesmo modelo visual uma-pergunta-por-tela,
+// mas linear p1 → p20 (ignora branching), com botão Pular por pergunta,
+// Voltar sempre disponível, contador por sessão e payload com
+// `modo: "entrevista"` + uuid.
 
 import { perguntas, mensagemFinal } from './src/perguntas.js';
-import { perguntasDaSecao } from './src/estado.js';
+import { proximaPerguntaLinear } from './src/estado.js';
 import { validarResposta } from './src/validacao.js';
-import { renderSecao } from './src/render.js';
+import { renderPerguntaUnica } from './src/render.js';
 import { APPS_SCRIPT_URL, gerarUuid } from './src/submit.js';
 
 const CHAVE_CONTADOR = 'acefb-entrevistas-contador';
 
 const estado = {
-  tela: 'inicio',   // 'inicio' | number (1..7) | 'fim'
-  respostas: {},    // { pX: valor }
-  puladas: new Set() // ids de perguntas puladas nesta entrevista
+  tela: 'inicio',          // 'inicio' | perguntaId | 'fim'
+  respostas: {},
+  puladas: new Set(),
+  historico: [],
 };
 
 const appEl = document.getElementById('app');
 
 function render() {
   appEl.innerHTML = '';
-  renderCabecalhoProgresso();
+  appEl.appendChild(renderProgresso());
 
   if (estado.tela === 'inicio') {
     appEl.appendChild(renderInicio());
   } else if (estado.tela === 'fim') {
-    // Tela final é construída pelo enviar()
+    // enviar() renderiza a tela final
   } else {
-    appEl.appendChild(renderCabecalhoSecao());
-    appEl.appendChild(renderSecao(estado.tela, estado.respostas, onChangeResposta));
-    marcarPuladasNoDom();
-    adicionarBotoesPular();
-    appEl.appendChild(renderAcoesSecao());
+    const pergunta = perguntas.find(p => p.id === estado.tela);
+    const perguntaEl = renderPerguntaUnica(pergunta, estado.respostas[pergunta.id], onChangeResposta);
+    if (estado.puladas.has(pergunta.id)) perguntaEl.classList.add('pulada');
+    appEl.appendChild(renderCabecalhoEntrevista());
+    appEl.appendChild(perguntaEl);
+    appEl.appendChild(renderAcoesPergunta(pergunta));
+    focarPrimeiroCampo();
   }
 }
 
-function renderCabecalhoProgresso() {
+function renderProgresso() {
   const bar = document.createElement('div');
   bar.className = 'progresso';
-  const atual = typeof estado.tela === 'number' ? estado.tela : (estado.tela === 'fim' ? 7 : 0);
-  const pct = estado.tela === 'fim' ? 100 : Math.round(((atual - 1) / 7) * 100);
-  bar.innerHTML = `<div class="progresso-fill" style="width:${Math.max(0, pct)}%"></div>`;
-  appEl.appendChild(bar);
-
-  if (typeof estado.tela === 'number') {
-    const label = document.createElement('p');
-    label.className = 'progresso-label';
-    label.textContent = `Seção ${estado.tela} de 7`;
-    appEl.appendChild(label);
-  }
+  const fill = document.createElement('div');
+  fill.className = 'progresso-fill';
+  fill.style.width = calcProgresso() + '%';
+  bar.appendChild(fill);
+  return bar;
 }
 
-function renderCabecalhoSecao() {
+function calcProgresso() {
+  if (estado.tela === 'inicio') return 0;
+  if (estado.tela === 'fim') return 100;
+  const idx = perguntas.findIndex(p => p.id === estado.tela);
+  return Math.round(((idx + 1) / perguntas.length) * 100);
+}
+
+function renderCabecalhoEntrevista() {
   const el = document.createElement('div');
   el.innerHTML = `<div class="modo-entrevista-tag">Modo entrevista</div>`;
   return el;
@@ -71,7 +65,7 @@ function renderCabecalhoSecao() {
 function renderInicio() {
   const n = lerContador();
   const el = document.createElement('section');
-  el.className = 'tela tela-inicio';
+  el.className = 'tela tela-inicio pergunta-ativa';
   el.innerHTML = `
     <div class="modo-entrevista-tag">Modo entrevista</div>
     <h1>ACEFB na sua visão</h1>
@@ -80,63 +74,72 @@ function renderInicio() {
       <p>Preencha conforme a conversa. Todas as perguntas aparecem na ordem, sem desvios.</p>
       <p>Use <strong>Pular pergunta</strong> quando a pessoa recusar responder e <strong>Voltar</strong> para corrigir.</p>
     </div>
-    <div style="text-align:center">
-      <div class="contador-entrevista">Entrevistas enviadas: ${n}</div>
-    </div>
+    <div><span class="contador-entrevista">Entrevistas enviadas: ${n}</span></div>
   `;
+  const acoes = document.createElement('div');
+  acoes.className = 'acoes';
+  const espacador = document.createElement('div');
+  espacador.className = 'espacador';
+  acoes.appendChild(espacador);
   const btn = document.createElement('button');
   btn.className = 'botao-principal';
   btn.textContent = 'Nova entrevista';
   btn.addEventListener('click', comecar);
-  el.appendChild(btn);
+  acoes.appendChild(btn);
+  el.appendChild(acoes);
   return el;
 }
 
-function renderAcoesSecao() {
-  const el = document.createElement('div');
-  el.className = 'acoes-entrevista';
-  if (estado.tela > 1) {
+function renderAcoesPergunta(pergunta) {
+  const acoes = document.createElement('div');
+  acoes.className = 'acoes';
+
+  if (estado.historico.length > 0) {
     const voltar = document.createElement('button');
     voltar.className = 'botao-secundario';
-    voltar.textContent = 'Voltar';
-    voltar.addEventListener('click', voltarSecao);
-    el.appendChild(voltar);
+    voltar.textContent = '← Voltar';
+    voltar.addEventListener('click', voltarPergunta);
+    acoes.appendChild(voltar);
   }
-  const avancar = document.createElement('button');
-  avancar.className = 'botao-principal';
-  avancar.textContent = estado.tela === 7 ? 'Finalizar' : 'Próxima';
-  avancar.addEventListener('click', avancarSecao);
-  el.appendChild(avancar);
-  return el;
+
+  const pular = document.createElement('button');
+  pular.className = 'botao-pular';
+  pular.textContent = 'Pular pergunta';
+  pular.addEventListener('click', () => pularPergunta(pergunta.id));
+  acoes.appendChild(pular);
+
+  const espacador = document.createElement('div');
+  espacador.className = 'espacador';
+  acoes.appendChild(espacador);
+
+  const btn = document.createElement('button');
+  btn.className = 'botao-principal';
+  btn.textContent = ehUltimaPergunta(pergunta) ? 'Finalizar' : 'Continuar';
+  btn.addEventListener('click', avancar);
+  acoes.appendChild(btn);
+
+  const atalho = document.createElement('span');
+  atalho.className = 'atalho-teclado';
+  atalho.innerHTML = 'Pressione <kbd>Enter</kbd>';
+  acoes.appendChild(atalho);
+
+  return acoes;
 }
 
-function adicionarBotoesPular() {
-  const perguntasVisiveis = perguntasDaSecao(estado.tela);
-  for (const p of perguntasVisiveis) {
-    const wrap = appEl.querySelector(`.pergunta[data-id="${p.id}"]`);
-    if (!wrap) continue;
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'botao-pular';
-    btn.textContent = 'Pular pergunta';
-    btn.addEventListener('click', () => pularPergunta(p.id));
-    wrap.appendChild(btn);
-  }
+function ehUltimaPergunta(pergunta) {
+  return proximaPerguntaLinear(pergunta.id) === 'fim';
 }
 
-function marcarPuladasNoDom() {
-  for (const id of estado.puladas) {
-    const wrap = appEl.querySelector(`.pergunta[data-id="${id}"]`);
-    if (wrap) wrap.classList.add('pulada');
-  }
+function focarPrimeiroCampo() {
+  const campo = appEl.querySelector('textarea, input[type="text"]');
+  if (campo) campo.focus();
 }
 
 function onChangeResposta(perguntaId, valor) {
-  // Qualquer interação desfaz o estado "pulada".
   if (estado.puladas.has(perguntaId)) {
     estado.puladas.delete(perguntaId);
-    const wrap = appEl.querySelector(`.pergunta[data-id="${perguntaId}"]`);
-    if (wrap) wrap.classList.remove('pulada');
+    const el = appEl.querySelector(`.tela[data-id="${perguntaId}"]`);
+    if (el) el.classList.remove('pulada');
   }
   estado.respostas[perguntaId] = valor;
   const erroEl = appEl.querySelector(`[data-erro-para="${perguntaId}"]`);
@@ -146,64 +149,48 @@ function onChangeResposta(perguntaId, valor) {
 function pularPergunta(id) {
   estado.puladas.add(id);
   delete estado.respostas[id];
-  // Limpa o DOM da pergunta (desmarca selections / limpa texto).
-  const wrap = appEl.querySelector(`.pergunta[data-id="${id}"]`);
-  if (wrap) {
-    wrap.classList.add('pulada');
-    wrap.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach((i) => {
-      i.checked = false;
-    });
-    wrap.querySelectorAll('textarea, input[type="text"]').forEach((i) => {
-      i.value = '';
-    });
-    const erroEl = wrap.querySelector('[data-erro-para]');
-    if (erroEl) erroEl.textContent = '';
-  }
+  estado.historico.push(estado.tela);
+  const prox = proximaPerguntaLinear(id);
+  if (prox === 'fim') return enviar();
+  estado.tela = prox;
+  render();
 }
 
 function comecar() {
   estado.respostas = {};
   estado.puladas = new Set();
-  estado.tela = 1;
+  estado.historico = [];
+  estado.historico.push('inicio');
+  estado.tela = perguntas[0].id;
   render();
-  rolarTopo();
 }
 
-function voltarSecao() {
-  if (typeof estado.tela !== 'number' || estado.tela <= 1) return;
-  estado.tela -= 1;
+function voltarPergunta() {
+  const anterior = estado.historico.pop();
+  if (!anterior) return;
+  estado.tela = anterior;
   render();
-  rolarTopo();
 }
 
-function avancarSecao() {
-  const secao = estado.tela;
-  const perguntasSecao = perguntasDaSecao(secao);
-  let primeiroErro = null;
+function avancar() {
+  if (estado.tela === 'inicio') return comecar();
+  const pergunta = perguntas.find(p => p.id === estado.tela);
+  if (!pergunta) return;
 
-  for (const p of perguntasSecao) {
-    if (estado.puladas.has(p.id)) continue;
-    const { ok, erro } = validarResposta(p, estado.respostas[p.id]);
+  if (!estado.puladas.has(pergunta.id)) {
+    const { ok, erro } = validarResposta(pergunta, estado.respostas[pergunta.id]);
     if (!ok) {
-      const erroEl = appEl.querySelector(`[data-erro-para="${p.id}"]`);
+      const erroEl = appEl.querySelector(`[data-erro-para="${pergunta.id}"]`);
       if (erroEl) erroEl.textContent = erro + ' Ou use "Pular pergunta".';
-      if (!primeiroErro) primeiroErro = p.id;
+      return;
     }
   }
 
-  if (primeiroErro) {
-    const el = appEl.querySelector(`.pergunta[data-id="${primeiroErro}"]`);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
-  }
-
-  if (secao === 7) {
-    enviar();
-  } else {
-    estado.tela = secao + 1;
-    render();
-    rolarTopo();
-  }
+  const prox = proximaPerguntaLinear(pergunta.id);
+  estado.historico.push(estado.tela);
+  if (prox === 'fim') return enviar();
+  estado.tela = prox;
+  render();
 }
 
 function montarPayload() {
@@ -222,7 +209,7 @@ function montarPayload() {
 async function enviar() {
   estado.tela = 'fim';
   const n = lerContador() + 1;
-  renderTelaFinal(n, 'enviando', null);
+  renderTelaFinal(n, 'enviando');
 
   const payload = montarPayload();
   const corpo = JSON.stringify(payload);
@@ -238,18 +225,18 @@ async function enviar() {
     if (json.ok === false) throw new Error(json.erro || 'resposta inválida');
     salvarContador(n);
     atualizarStatus('Entrevista enviada com sucesso.', 'ok');
-  } catch (err) {
+  } catch {
     atualizarStatus('Falha no envio. Verifique a conexão e tente de novo.', 'erro');
     adicionarBotaoReenviar(corpo, n);
   }
 }
 
-function renderTelaFinal(n, estadoEnvio, _ignored) {
+function renderTelaFinal(n, estadoEnvio) {
   appEl.innerHTML = '';
-  renderCabecalhoProgresso();
+  appEl.appendChild(renderProgresso());
 
   const el = document.createElement('section');
-  el.className = 'tela tela-fim';
+  el.className = 'tela tela-fim pergunta-ativa';
   const classeStatus = estadoEnvio === 'enviando' ? 'status-envio enviando' : 'status-envio';
   const textoStatus = estadoEnvio === 'enviando' ? 'Enviando' : '';
   el.innerHTML = `
@@ -259,8 +246,11 @@ function renderTelaFinal(n, estadoEnvio, _ignored) {
     <div class="${classeStatus}" id="statusEnvio">${textoStatus}</div>
   `;
   const acoes = document.createElement('div');
-  acoes.className = 'acoes-entrevista';
+  acoes.className = 'acoes';
   acoes.id = 'acoesFim';
+  const espacador = document.createElement('div');
+  espacador.className = 'espacador';
+  acoes.appendChild(espacador);
   const nova = document.createElement('button');
   nova.className = 'botao-principal';
   nova.textContent = 'Nova entrevista';
@@ -268,7 +258,6 @@ function renderTelaFinal(n, estadoEnvio, _ignored) {
   acoes.appendChild(nova);
   el.appendChild(acoes);
   appEl.appendChild(el);
-  rolarTopo();
 }
 
 function adicionarBotaoReenviar(corpo, n) {
@@ -292,7 +281,7 @@ function adicionarBotaoReenviar(corpo, n) {
       salvarContador(n);
       atualizarStatus('Entrevista enviada com sucesso.', 'ok');
       btn.remove();
-    } catch (err) {
+    } catch {
       atualizarStatus('Ainda não foi. Verifique a conexão.', 'erro');
       btn.disabled = false;
     }
@@ -317,6 +306,12 @@ function salvarContador(n) {
   try { sessionStorage.setItem(CHAVE_CONTADOR, String(n)); } catch {}
 }
 
-function rolarTopo() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  if (e.target.tagName === 'TEXTAREA') return;
+  if (e.target.tagName === 'BUTTON') return;
+  e.preventDefault();
+  avancar();
+});
 
 render();
